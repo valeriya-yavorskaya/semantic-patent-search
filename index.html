@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta content='text/html'>
+        <meta charset="ansi">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Patent search</title>
+        <link rel="stylesheet" href="stylesheet.css">
+        <script src='jquery/dist/jquery.min.js'></script>  
+    </head>
+    <body> 
+        <h2>Сравнение семантических графов</h2>
+
+        <p>Загрузить синтактический граф и построить семантический граф</p>
+        <input type='file' id='userGraph'>
+        <button id='take-graph'>Загрузить и построить</button>
+        <p>Результат построения графа №1</p>         
+        <textarea id='output-built'></textarea>
+
+        <p>Загрузить граф №2 для сравнения</p>
+        <input type='file' id='userFile'>
+
+        <button id='take-xml'>Сравнить</button>
+        <p>Результат сравнения</p>
+        <textarea id='output-result'></textarea>
+
+        <button id='reload'>Попробовать ещё раз</button>
+
+        <div id='container'></div>
+
+        <script src='second.js'></script>
+    </body>
+</html>

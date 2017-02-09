@@ -1,0 +1,7 @@
+npm install -g express-generator
+express --hbs
+npm install
+npm start
+npm install --save-dev mocha
+npm install --save-dev request
+npm test
