@@ -79,11 +79,13 @@ window.onload = function() {
             newProp=null,
             thisLexeme=null,
             childLexeme=null,
+            childPartOfSpeech = null,
             flag=0,
             usedNodes=[],
             smallChildsNodes=null,
             smallChild=null,
             smallChildLexeme=null,
+            smallChildPartOfSpeech = null,
             newchild=null,
             newPar=null,
             name = null,
@@ -189,18 +191,10 @@ window.onload = function() {
                     usedNodes.push(currentNode);  
                     break;
                 }
-                case 'ПРЕДЛОГ': {
+                case 'ИНФИНИТИВ': {
                     body.appendChild(newSymbol);  
                     body.appendChild(br); 
-                    addChildSymbol("<Type>","Relation",body);
-                    flag=1; 
-                    usedNodes.push(currentNode);  
-                    break;
-                }
-                case 'СОЮЗ': {
-                    body.appendChild(newSymbol);  
-                    body.appendChild(br); 
-                    addChildSymbol("<Type>","Relation",body);
+                    addChildSymbol("<Type>","Action",body);
                     flag=1; 
                     usedNodes.push(currentNode);  
                     break;
@@ -220,6 +214,31 @@ window.onload = function() {
                     }
                     break;
                 }
+                case 'ПРЕДЛОГ': {
+                    body.appendChild(newSymbol);  
+                    body.appendChild(br); 
+                    addChildSymbol("<Type>","Relation",body);
+                    flag=1; 
+                    usedNodes.push(currentNode);  
+                    break;
+                }
+                case 'СОЮЗ': {
+                    body.appendChild(newSymbol);  
+                    body.appendChild(br); 
+                    addChildSymbol("<Type>","Relation",body);
+                    flag=1; 
+                    usedNodes.push(currentNode);  
+                    break;
+                } 
+                case 'ЧАСТИЦА': {
+                    body.appendChild(newSymbol);  
+                    body.appendChild(br); 
+                    addChildSymbol("<Type>","Relation",body);
+                    flag=1; 
+                    usedNodes.push(currentNode);  
+                    break;
+                }
+                
             }
 
             /*если флаг был выставлен, для созданного выше узла определяются обязательные свойства, 
@@ -243,6 +262,7 @@ window.onload = function() {
 
             /*если флаг был выставлен, определяются семантические свойства данного узла, 
             представленные связанными с ним пригалательными и деепричастиями*/
+            addingProperties:
             if(flag) {
                 for(var j=0;j<edges.length;j++) {
                     edge = edges[j];
@@ -250,8 +270,10 @@ window.onload = function() {
                     child = edge.nextSibling.nextSibling;
                     par = edge.parentElement.parentElement;
                     parLexeme = par.querySelector('lexeme').textContent;
-                    childLexeme = child.querySelector('lexeme').textContent;
-                    lemma = child.querySelector('version').getAttribute('lemma');     
+                    childLexeme = child.querySelector('lexeme').textContent;  
+                    childPartOfSpeech = child.querySelector('version').getAttribute('pos');  
+                    if(childPartOfSpeech == 'ПУНКТУАТОР') break addingProperties;
+                    lemma = child.querySelector('version').getAttribute('lemma'); 
                     
                     /*если значение свойства "имя ребра" для текущего узла - прилагательное или деепричастие*/
                     if(((edgeName=='ATTRIBUTE_link')||(edgeName=='NEXT_ADJECTIVE_link'))&&(parLexeme==lexeme)) {
@@ -267,8 +289,9 @@ window.onload = function() {
                         /*если необходимо рассмотреть однородные идущие друг за другом прилагательные или деепричастия*/
                         smallChildsNodes = child.querySelectorAll('edge');
                         for(var q=0;q<smallChildsNodes.length;q++) {
-                            edgeName = smallChildsNodes[q].getAttribute('name');
                             smallChild = smallChildsNodes[q].nextSibling.nextSibling;
+                            smallChildPartOfSpeech = smallChild.querySelector('version').getAttribute('pos'); 
+                            if(smallChildPartOfSpeech == 'ПУНКТУАТОР') continue;                            
                             smallChildLexeme = smallChild.querySelector('lexeme').textContent;
                             smallChildLemma = smallChild.querySelector('version').getAttribute('lemma'); 
 
@@ -289,7 +312,7 @@ window.onload = function() {
                     newParLexeme = newPar.querySelector('lexeme').textContent;
                     newChildLexeme = newchild.querySelector('lexeme').textContent;
                     edgeName = edges[w].getAttribute('name');
-                    if((edgeName=='ATTRIBUTE_link')||(edgeName=='NEXT_ADJECTIVE_link')) {
+                    if((edgeName=='ATTRIBUTE_link')||(edgeName=='NEXT_ADJECTIVE_link')||(edgeName=='PUNCTUATION_link')) {
                        //console.log('no'); 
                     } else {
                         if((newParLexeme==lexeme)) {
@@ -518,12 +541,25 @@ window.onload = function() {
             edgeName = newEdges[i].getAttribute('name');
 
             /*пропустить вершину, если в ней содержится информация об знаке препинания*/
-            if ( (edgeName == 'PUNCTUATION_link') || (edgeName == 'NEXT_COLLOCATION_ITEM_link') ) continue;
+            // if ( (edgeName == 'PUNCTUATION_link') || (edgeName == 'NEXT_COLLOCATION_ITEM_link') ) continue;
 
             /*определение элементов, связанных данным ребром; 
             родительским считается элемент, расположенный выше по иерархии узлов синтаксической модели*/
-            child = edge.nextSibling.nextSibling;
+            
             par = edge.parentElement.parentElement;
+            if(par.querySelector('version').getAttribute('pos') == 'ПУНКТУАТОР') {
+                continue;
+            }
+
+            child = edge.nextSibling.nextSibling;
+            if(child.querySelector('version').getAttribute('pos') == 'ПУНКТУАТОР') {
+                if(child.children[2]) {
+                    var newChild = child.children[2].querySelector('node');
+                    child = newChild;
+                    console.log(child);
+                    console.log(par);
+                } else continue;
+            }
 
             caseType = child.querySelector('version').getAttribute('coordStateName');
             
@@ -587,37 +623,61 @@ window.onload = function() {
                 case 'OBJECT_link': {
                     addChildSymbol('<FirstSymbolContact>',what,body);
                     addChildSymbol('<SecondSymbolContactPosType>','Top',body);
-                    addChildSymbol('<SecondSymbolContactPosValue>','0,3',body);
+                    addChildSymbol('<SecondSymbolContactPosValue>','0,1',body);
                     break;
                 }
                 case 'SUBJECT_link': {
                     addChildSymbol('<FirstSymbolContact>',what,body);
                     addChildSymbol('<SecondSymbolContactPosType>','Top',body);
-                    addChildSymbol('<SecondSymbolContactPosValue>','0,5',body);                    
+                    addChildSymbol('<SecondSymbolContactPosValue>','0,2',body);                    
                     break;
                 }
                 case 'RIGHT_GENITIVE_OBJECT_link': {
                     addChildSymbol('<FirstSymbolContact>','Кон1',body);
                     addChildSymbol('<SecondSymbolContactPosType>','Top',body);
-                    addChildSymbol('<SecondSymbolContactPosValue>','0,6',body);
+                    addChildSymbol('<SecondSymbolContactPosValue>','0,3',body);
                     break;
                 }
                 case 'PREPOS_ADJUNCT_link' : {
                     addChildSymbol('<FirstSymbolContact>','Кон2',body);
                     addChildSymbol('<SecondSymbolContactPosType>','Top',body);
-                    addChildSymbol('<SecondSymbolContactPosValue>','0,7',body);
+                    addChildSymbol('<SecondSymbolContactPosValue>','0,4',body);
                     break;
                 }
                 case 'RIGHT_LOGIC_ITEM_link' : {
                     addChildSymbol('<FirstSymbolContact>','Кон3',body);
                     addChildSymbol('<SecondSymbolContactPosType>','Top',body);
-                    addChildSymbol('<SecondSymbolContactPosValue>','0,1',body);
+                    addChildSymbol('<SecondSymbolContactPosValue>','0,5',body);
                     break;
                 }
                 case 'NEXT_COLLOCATION_ITEM_link' : {
                     addChildSymbol('<FirstSymbolContact>','Чему',body);
                     addChildSymbol('<SecondSymbolContactPosType>','Top',body);
-                    addChildSymbol('<SecondSymbolContactPosValue>','0,2',body);
+                    addChildSymbol('<SecondSymbolContactPosValue>','0,6',body);
+                    break;
+                }
+                case 'INFINITIVE_link' : {
+                    addChildSymbol('<FirstSymbolContact>','Что делать',body);
+                    addChildSymbol('<SecondSymbolContactPosType>','Top',body);
+                    addChildSymbol('<SecondSymbolContactPosValue>','0,7',body);
+                    break;
+                }
+                case 'NEGATION_PARTICLE_link' : {
+                    addChildSymbol('<FirstSymbolContact>','Кон4',body);
+                    addChildSymbol('<SecondSymbolContactPosType>','Top',body);
+                    addChildSymbol('<SecondSymbolContactPosValue>','0,8',body);
+                    break;
+                }
+                case 'SUBORDINATE_CLAUSE_link' : {
+                    addChildSymbol('<FirstSymbolContact>','Кон5',body);
+                    addChildSymbol('<SecondSymbolContactPosType>','Top',body);
+                    addChildSymbol('<SecondSymbolContactPosValue>','0,9',body);
+                    break;
+                }
+                case 'NEXT_CLAUSE_link' : {
+                    addChildSymbol('<FirstSymbolContact>','Кон6',body);
+                    addChildSymbol('<SecondSymbolContactPosType>','Left',body);
+                    addChildSymbol('<SecondSymbolContactPosValue>','0,1',body);
                     break;
                 }
                 default: {
@@ -704,19 +764,19 @@ window.onload = function() {
                     case 'OBJECT_link': {
                          addChildSymbol('<ContactName>',what,body);
                          addChildSymbol('<ContactPosType>','Top',body);
-                         addChildSymbol('<ContactPosValue>','0,3',body);
+                         addChildSymbol('<ContactPosValue>','0,1',body);
                         break;
                     }
                     case 'SUBJECT_link': {
                         addChildSymbol('<ContactName>',what,body);
-                        addChildSymbol('<ContactPosType>','Bottom',body);
+                        addChildSymbol('<ContactPosType>','Top',body);
                         addChildSymbol('<ContactPosValue>','0,2',body);
                         break;
                     }
                     case 'RIGHT_GENITIVE_OBJECT_link': {
                         addChildSymbol('<ContactName>','Кон1',body);
                         addChildSymbol('<ContactPosType>','Right',body);
-                        addChildSymbol('<ContactPosValue>','0,4',body);
+                        addChildSymbol('<ContactPosValue>','0,3',body);
                         break;
                     }
                     case 'PREPOS_ADJUNCT_link' : {
@@ -728,13 +788,37 @@ window.onload = function() {
                     case 'RIGHT_LOGIC_ITEM_link' : {
                         addChildSymbol('<ContactName>','Кон3',body);
                         addChildSymbol('<ContactPosType>','Top',body);
-                        addChildSymbol('<ContactPosValue>','0,1',body);
+                        addChildSymbol('<ContactPosValue>','0,5',body);
                         break;
                     }
                     case 'NEXT_COLLOCATION_ITEM_link' : {
                         addChildSymbol('<ContactName>','Чему',body);
                         addChildSymbol('<ContactPosType>','Top',body);
-                        addChildSymbol('<ContactPosValue>','0,2',body);
+                        addChildSymbol('<ContactPosValue>','0,6',body);
+                        break;
+                    }
+                    case 'INFINITIVE_link' : {
+                        addChildSymbol('<ContactName>','Что делать',body);
+                        addChildSymbol('<ContactPosType>','Top',body);
+                        addChildSymbol('<ContactPosValue>','0,7',body);
+                        break;
+                    }
+                    case 'NEGATION_PARTICLE_link' : {
+                        addChildSymbol('<ContactName>','Кон4',body);
+                        addChildSymbol('<ContactPosType>','Top',body);
+                        addChildSymbol('<ContactPosValue>','0,8',body);
+                        break;
+                    }
+                    case 'SUBORDINATE_CLAUSE_link' : {
+                        addChildSymbol('<ContactName>','Кон5',body);
+                        addChildSymbol('<ContactPosType>','Top',body);
+                        addChildSymbol('<ContactPosValue>','0,9',body);
+                        break;
+                    }
+                    case 'NEXT_CLAUSE_link' : {
+                        addChildSymbol('<ContactName>','Кон6',body);
+                        addChildSymbol('<ContactPosType>','Left',body);
+                        addChildSymbol('<ContactPosValue>','0,1',body);
                         break;
                     }
                     default: {
