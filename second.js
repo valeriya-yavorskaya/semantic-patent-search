@@ -349,7 +349,8 @@ window.onload = function() {
             0: 'интересный',
             1: 'Москва',
             2: 'толстый',
-            3: 'дерево'
+            3: 'дерево',
+            4: 'купила'
         };
         var wrds1 = JSON.stringify(wrds);
         getSynonyms(wrds1);
@@ -396,38 +397,53 @@ window.onload = function() {
                 biggerLength = takenObjectLength;
             }
 
-            console.log(smallerObj);
-
             for (var i=0;i<smallerLength;i++) {
                 vertexS = smallerObj[i];
                 for(var j=0;j<biggerLength;j++) {
                     vertexB = biggerObj[j];
-                    if(vertexS[1]!=vertexB[1]) continue;
+                    if(vertexS[0]!=vertexB[0]) continue;
+                    else {
+                        if(vertexS[1] == vertexB[1]) {
+                            /*all is normal*/
+                        } else {
+                            var returnedValues = applySynonyms(vertexS[1],vertexB[1]);
+                            if(returnedValues[0] == 0) {
+                                continue;
+                            }
+                        }
+                        
+                    }
                     for(var k=0;k<vertexS.length;k++) {
                         if(typeof(vertexS[k])=='object') {
                             mas1 = (vertexS[k].length>vertexB[k].length) ? vertexB[k] : vertexS[k];
                             mas2 = (vertexS[k].length>vertexB[k].length) ? vertexS[k] : vertexB[k];
-                            if((mas1.length==0)||(mas2.length==0)) continue;
+                            // if((mas1.length==0)||(mas2.length==0)) {
+                            //     // countOfAllElements++;
+                            //     continue;
+                            // }
                             for(var l=0;l<mas1.length;l++) {
                                 if(mas1[l] == mas1[l+1]) continue;
                                 for(var m=0;m<mas2.length;m++) {
                                     if(mas1[l] ==  mas2[m]) {
                                         countOfSimilarElements++;
                                     } else {
-                                        countOfSimilarElements += applySynonyms(mas1[l],mas2[m]);
+                                        returnedValues = applySynonyms(mas1[l],mas2[m]);
+                                        countOfSimilarElements += returnedValues[0];
                                     }
                                 }
                             }
                         } else {
                             if(vertexS[k]==vertexB[k]) {
                                 countOfSimilarElements++;
-                            } else continue;
+                            } else {
+                                returnedValues = applySynonyms(vertexS[k],vertexB[k]);
+                                countOfSimilarElements += returnedValues[0];
+                            };
                         }
                         
                     }
                 }
             }
-
             for(var i=0;i<biggerLength;i++) {
                 vertexB = biggerObj[i];
                 for(var k=0;k<vertexB.length;k++) {
@@ -438,6 +454,8 @@ window.onload = function() {
                      }
                 }
             }
+            console.log(countOfAllElements);
+            console.log(countOfSimilarElements);
             similarity = (countOfSimilarElements/countOfAllElements)*100;
             console.log('Граф №1 и граф №2 схожи на ' + similarity + '%');
             var output = document.getElementById('output-result');
@@ -447,9 +465,11 @@ window.onload = function() {
     /*функция применения словаря синонимов для сравнения массивов слов из вершин семнатических моделей*/
     function applySynonyms(a,b) {
         var countOfSimilarElements = 0;
+        var countOfAllElements = 0;
         for(var lowerKey in globalSynonyms) {
             var localSynonyms = globalSynonyms[lowerKey];
             var synonymsFlag=0;
+            /*определить список синонимов для слова а*/
             for(var lowestKey in localSynonyms) {
                 if(a == localSynonyms[lowestKey]) {
                     synonymsFlag = 1;
@@ -457,13 +477,15 @@ window.onload = function() {
             }
             if(synonymsFlag) {
                 for(var lowestKey in localSynonyms) { 
+                    /*если слово b совпало с одним из синонимов слова а */
                     if(b == localSynonyms[lowestKey]) { 
                         countOfSimilarElements++;
+                        countOfAllElements++;
                     }
                  }
             }
         }
-        return countOfSimilarElements;
+        return [countOfSimilarElements, countOfAllElements];
     }
 
     /*функция для определения информации, характеризующей каждую модель; на основании этой информации будет производится сравнение*/
