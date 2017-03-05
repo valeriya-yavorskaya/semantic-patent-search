@@ -108,18 +108,34 @@ window.onload = function() {
                 reader.onload = function(event) {
                     newXML = event.target.result;
                     var obj = $(newXML);
-                    /*получение информации о построенной семантической модели*/
-                    var takenObject = makeInfo(obj);                    
                     console.log('file №2 was loaded');
+
+                    /*получение информации о построенной семантической модели*/
+                    var returnedValuesOfMakingObj = makeWordsInfo(obj);
+                    var takenObjectWords = returnedValuesOfMakingObj[0];  
+                    var wordsToFindSynonyms = returnedValuesOfMakingObj[1]; 
+                    var wrds = JSON.stringify(wordsToFindSynonyms);
+                    getSynonyms(wrds); 
+
+                    var takenObjectEdges = makeEdgesInfo(obj);
 
                     if(newBody=='') alert('Ошибка в рассматриваемом графе ');
                     else {
                         obj = $(newBody);
                         /*получение информации о загруженнной семантической модели*/
-                        var innerObject = makeInfo(obj); 
+                        returnedValuesOfMakingObj = makeWordsInfo(obj);
+                        var innerObjectWords = returnedValuesOfMakingObj[0]; 
+                        var innerObjectEdges = makeEdgesInfo(obj);
                     }
+
                     /*сравнение построенной и загруженной семантических моделей*/
-                    compareObjects(innerObject,takenObject);
+                    var similarityInWords = compareObjectsInWords(innerObjectWords,takenObjectWords);
+                    console.log('Граф №1 и граф №2 схожи на ' + similarityInWords + '%');
+                    var similarityInEdges = compareObjectsInEdges(innerObjectEdges,takenObjectEdges);
+                    console.log(similarityInEdges);
+
+                    var output = document.getElementById('output-result');
+                    output.innerText = 'Граф №1 и граф №2 схожи на ' + similarityInWords + '%';
                 };
                 
                 reader.onerror = function(event) {
@@ -344,16 +360,6 @@ window.onload = function() {
         var output = document.getElementById('output-built');
         output.innerText = 'Граф №1 построен и сохранён';
         body.style.visibility = 'hidden';
-
-        var wrds = {
-            0: 'интересный',
-            1: 'Москва',
-            2: 'толстый',
-            3: 'дерево',
-            4: 'купила'
-        };
-        var wrds1 = JSON.stringify(wrds);
-        getSynonyms(wrds1);
     };
 
     /*функция для передачи списка синонимов в глобальную область видимости после асинхронной загрузки*/
@@ -369,8 +375,8 @@ window.onload = function() {
         globalSynonyms = obj;
     };
 
-    /*функция, реализующая подсистему Сравнение*/
-    function compareObjects(innerObject,takenObject) {
+    /*функция, реализующая подсистему Сравнение для слов*/
+    function compareObjectsInWords(innerObject,takenObject) {
         var innerObjectLength = innerObject.length,
             takenObjectLength = takenObject.length,
             smallerObj=null,
@@ -454,12 +460,8 @@ window.onload = function() {
                      }
                 }
             }
-            console.log(countOfAllElements);
-            console.log(countOfSimilarElements);
             similarity = (countOfSimilarElements/countOfAllElements)*100;
-            console.log('Граф №1 и граф №2 схожи на ' + similarity + '%');
-            var output = document.getElementById('output-result');
-            output.innerText = 'Граф №1 и граф №2 схожи на ' + similarity + '%';
+            return similarity;
     }
 
     /*функция применения словаря синонимов для сравнения массивов слов из вершин семнатических моделей*/
@@ -488,8 +490,13 @@ window.onload = function() {
         return [countOfSimilarElements, countOfAllElements];
     }
 
-    /*функция для определения информации, характеризующей каждую модель; на основании этой информации будет производится сравнение*/
-    function makeInfo(object) {
+    function compareObjectsInEdges(innerObject,takenObject) {
+        var similarity = 0;
+        return similarity;
+    }
+
+    /*функция для определения информации о словах, характеризующей каждую модель; на основании этой информации будет производится сравнение слов*/
+    function makeWordsInfo(object) {
         var len = object.length,
             nodes = object.find('symbol'),
             globalProps = [],
@@ -501,7 +508,8 @@ window.onload = function() {
             props=[],
             conProps=[],
             valueProps=[],
-            text='';
+            text='',
+            words = [];
         
         
         for (var i=0;i<nodesLength;i++) {
@@ -523,11 +531,12 @@ window.onload = function() {
                 childValue = text.substring(0,text.indexOf('\n'));
                 switch (childName) {
                     case 'TYPE': {
-                        props.push(childValue);                        
+                        props.push(childValue);                    
                         break;
                     }
                     case 'NAME': {
                         props.push(childValue);
+                        words.push(childValue);    
                         break;
                     }
                     case 'CONTACTNAME': {
@@ -536,6 +545,7 @@ window.onload = function() {
                     }
                     case 'PROPERTYVALUE': {
                         valueProps.push(childValue);
+                        words.push(childValue);    
                         break;
                     }
                 }                
@@ -562,7 +572,13 @@ window.onload = function() {
             globalProps.push(props);
         }
 
-        return globalProps;
+        return [globalProps,words];
+    }
+
+    function makeEdgesInfo(object) {
+        var smth = [];
+        console.log(object);
+        return smth;
     }
     
     /*функция для добавления узла <Connections> к семантической модели*/
