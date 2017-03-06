@@ -492,6 +492,8 @@ window.onload = function() {
 
     function compareObjectsInEdges(innerObject,takenObject) {
         var similarity = 0;
+        console.log(innerObject);
+        console.log(takenObject);
         return similarity;
     }
 
@@ -514,9 +516,75 @@ window.onload = function() {
         
         for (var i=0;i<nodesLength;i++) {
             node = nodes[i];
-            props=[];
-            conProps=[];
-            valueProps=[];
+            // props=[];
+            // conProps=[];
+            // valueProps=[];
+
+            // /*заполение массива свойств узла*/
+            
+            // while((node.children[0].nodeName!='SYMBOL')) { 
+            //     if(node.children[0].nodeName=='CONNECTION') {
+            //         break;
+            //     }
+            //     child = node.children;
+            //     childEl = child[0];
+            //     childName = childEl.nodeName;
+            //     text = childEl.innerText;
+            //     childValue = text.substring(0,text.indexOf('\n'));
+            //     switch (childName) {
+            //         case 'TYPE': {
+            //             props.push(childValue);                    
+            //             break;
+            //         }
+            //         case 'NAME': {
+            //             props.push(childValue);
+            //             words.push(childValue);    
+            //             break;
+            //         }
+            //         case 'CONTACTNAME': {
+            //             conProps.push(childValue);
+            //             break;
+            //         }
+            //         case 'PROPERTYVALUE': {
+            //             valueProps.push(childValue);
+            //             words.push(childValue);    
+            //             break;
+            //         }
+            //     }                
+                
+            //     /*определение следующего элемента*/
+            //     if(child[0].children.length!=0) {
+            //         node = child[0];
+            //     } else {
+            //         for (var j=0;j<child.length;j++) {
+            //             if(child[j].children.length!=0) {
+            //                 node = child[j];
+            //                 break;
+            //             } else {
+            //                 continue;
+            //             }
+            //         }
+            //         if(j==child.length) {
+            //             break;
+            //         }
+            //     }
+            // }
+            // props.push(conProps);
+            // props.push(valueProps);
+            var nodeInfo = getNodeInfo(node);
+            props = nodeInfo[0];
+            words = nodeInfo[1];
+            globalProps.push(props);
+        }
+
+        return [globalProps,words];
+    }
+
+    function getNodeInfo(node) {
+        var props=[],
+            conProps=[],
+            valueProps=[],
+            words = [];
 
             /*заполение массива свойств узла*/
             // props.push(i);
@@ -569,16 +637,53 @@ window.onload = function() {
             }
             props.push(conProps);
             props.push(valueProps);
-            globalProps.push(props);
-        }
-
-        return [globalProps,words];
+            return [props,words];
     }
 
     function makeEdgesInfo(object) {
-        var smth = [];
-        console.log(object);
-        return smth;
+        var smth = [],
+            initialConnections = object.find('Connection'),
+            connections = [],
+            connection = null,
+            connectionToSave = [],
+            connectionsToUse = [],
+            firstNodeInfo = null,
+            secondNodeInfo = null,
+            newPair = [],
+            edgesAndNodes = [];
+
+        for(var i=0; i<initialConnections.length; i++) {
+            connection = initialConnections[i];
+            firstSymbol = connection.children[0].children[0];
+            firstSymbolText = firstSymbol.innerText;
+            firstSymbolTextValue = firstSymbolText.substring(0,firstSymbolText.indexOf('\n'));
+
+            secondSymbol = firstSymbol.children[0];
+            secondSymbolText = secondSymbol.innerText;
+            secondSymbolTextValue = secondSymbolText.substring(0,secondSymbolText.indexOf('\n'));
+
+            connectionToSave = [firstSymbolTextValue, secondSymbolTextValue];   
+            connectionsToUse.push(connectionToSave);      
+        }
+
+        var symbols = object.find('Symbol');       
+        var symbol = null;
+        connection = null;
+        for(var i=0; i<connectionsToUse.length; i++) {
+            for(var j=0; j<symbols.length; j++) {
+                connection = connectionsToUse[i];
+                symbol = symbols[j].children[0];
+                if((+connection[0]) == j) {
+                    firstNodeInfo = getNodeInfo(symbol)[0];
+                } if((+connection[1]) == j) {
+                    secondNodeInfo = getNodeInfo(symbol)[0];
+                }
+            }
+            newPair = [firstNodeInfo,secondNodeInfo];
+            edgesAndNodes.push(newPair);
+        }
+        
+        return edgesAndNodes;
     }
     
     /*функция для добавления узла <Connections> к семантической модели*/
