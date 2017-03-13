@@ -130,12 +130,13 @@ window.onload = function() {
 
                     /*сравнение построенной и загруженной семантических моделей*/
                     var similarityInWords = compareObjectsInWords(innerObjectWords,takenObjectWords);
-                    console.log('Граф №1 и граф №2 схожи на ' + similarityInWords + '%');
+                    console.log(similarityInWords);
                     var similarityInEdges = compareObjectsInEdges(innerObjectEdges,takenObjectEdges);
                     console.log(similarityInEdges);
+                    var midSimilarity = (similarityInWords + similarityInEdges) / 2;
 
                     var output = document.getElementById('output-result');
-                    output.innerText = 'Граф №1 и граф №2 схожи на ' + similarityInWords + '%';
+                    output.innerText = 'Граф №1 и граф №2 схожи на ' + midSimilarity + '%';
                 };
                 
                 reader.onerror = function(event) {
@@ -450,6 +451,7 @@ window.onload = function() {
                     }
                 }
             }
+            /*полное число элементов*/
             for(var i=0;i<biggerLength;i++) {
                 vertexB = biggerObj[i];
                 for(var k=0;k<vertexB.length;k++) {
@@ -490,10 +492,66 @@ window.onload = function() {
         return [countOfSimilarElements, countOfAllElements];
     }
 
+    /*функция, реализующая подсистему Сравнение для объектов, представляющих собой два набора свойств рёбер, имеющих общую вершину*/
     function compareObjectsInEdges(innerObject,takenObject) {
-        var similarity = 0;
-        console.log(innerObject);
-        console.log(takenObject);
+        var innerObjectLength = innerObject.length,
+            takenObjectLength = takenObject.length,
+            smallerObj=null,
+            smallerLength=null,
+            biggerObj=null,
+            biggerLength=null,
+            vertexB=null,
+            vertexS=null,
+            mas1=[],
+            mas2=[],
+            countOfAllElements=0,
+            countOfSimilarElements=0,
+            similarity=0,
+            similarCounterForPair = 0,
+            sumSimilarityForPair = 0,
+            similarityForPair = 0,
+            sumSimilarityForObjects = 0,
+            similarityForObjects = 0;
+
+            if(innerObjectLength>takenObjectLength) {
+                smallerObj = takenObject;
+                smallerLength = takenObjectLength;
+                biggerObj = innerObject;
+                biggerLength = innerObjectLength;
+            } else {
+                smallerObj = innerObject;
+                smallerLength = innerObjectLength;
+                biggerObj = takenObject;
+                biggerLength = takenObjectLength;
+            }
+            for (var i=0;i<biggerLength; i++) {
+                biggerObjPair = biggerObj[i];
+                for(var j=0; j<smallerLength; j++) {                    
+                    smallerObjPair = smallerObj[j];
+
+                    similarCounterForPair = 0;
+                    sumSimilarityForPair = 0;
+                    for(var indBig = 0; indBig<biggerObjPair.length; indBig++) {
+                        elementOfBiggerObjectPair = biggerObjPair[indBig];
+                        for(var indSmall = 0; indSmall<smallerObjPair.length; indSmall++) {
+                            elementOfSmallerObjectPair = smallerObjPair[indSmall];
+
+                            sim = compareObjectsInWords(elementOfBiggerObjectPair, elementOfSmallerObjectPair);
+                            if(sim > 0) {
+                                similarCounterForPair++;
+                                sumSimilarityForPair += sim;
+                            }
+                        }
+                    }
+                    if(similarCounterForPair == biggerObjPair.length) {
+                        similarityForPair = sumSimilarityForPair / biggerObjPair.length;
+                        sumSimilarityForObjects += similarityForPair;
+                    }
+
+                }
+            }
+            similarityForObjects = sumSimilarityForObjects / biggerLength;
+            similarity = similarityForObjects;
         return similarity;
     }
 
@@ -516,61 +574,6 @@ window.onload = function() {
         
         for (var i=0;i<nodesLength;i++) {
             node = nodes[i];
-            // props=[];
-            // conProps=[];
-            // valueProps=[];
-
-            // /*заполение массива свойств узла*/
-            
-            // while((node.children[0].nodeName!='SYMBOL')) { 
-            //     if(node.children[0].nodeName=='CONNECTION') {
-            //         break;
-            //     }
-            //     child = node.children;
-            //     childEl = child[0];
-            //     childName = childEl.nodeName;
-            //     text = childEl.innerText;
-            //     childValue = text.substring(0,text.indexOf('\n'));
-            //     switch (childName) {
-            //         case 'TYPE': {
-            //             props.push(childValue);                    
-            //             break;
-            //         }
-            //         case 'NAME': {
-            //             props.push(childValue);
-            //             words.push(childValue);    
-            //             break;
-            //         }
-            //         case 'CONTACTNAME': {
-            //             conProps.push(childValue);
-            //             break;
-            //         }
-            //         case 'PROPERTYVALUE': {
-            //             valueProps.push(childValue);
-            //             words.push(childValue);    
-            //             break;
-            //         }
-            //     }                
-                
-            //     /*определение следующего элемента*/
-            //     if(child[0].children.length!=0) {
-            //         node = child[0];
-            //     } else {
-            //         for (var j=0;j<child.length;j++) {
-            //             if(child[j].children.length!=0) {
-            //                 node = child[j];
-            //                 break;
-            //             } else {
-            //                 continue;
-            //             }
-            //         }
-            //         if(j==child.length) {
-            //             break;
-            //         }
-            //     }
-            // }
-            // props.push(conProps);
-            // props.push(valueProps);
             var nodeInfo = getNodeInfo(node);
             props = nodeInfo[0];
             words = nodeInfo[1];
