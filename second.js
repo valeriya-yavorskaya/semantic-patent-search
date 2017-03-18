@@ -90,7 +90,8 @@ window.onload = function() {
             newPar=null,
             name = null,
             need = null,
-            globalSynonyms = null;
+            globalSynonyms = null,
+            subordinateClauseflag = 0;
 
         nodes = initTree.find( "node" ); /*все узлы синтаксической модели*/
         nodesCount = nodes.length; /*число узлов синтаксической модели*/
@@ -167,6 +168,7 @@ window.onload = function() {
 
         /*пока не перебраны все узлы синтаксической модели*/
         for(var i=0;i<nodesCount;i++) {
+            subordinateClauseflag = 0;
              
             /*создание узла <Symbol>*/
             newSymbol = document.createTextNode("<Symbol>");
@@ -180,10 +182,68 @@ window.onload = function() {
             partOfSpeech = versions.getAttribute('pos');
             lemma = versions.getAttribute('lemma');
 
-            flag=0; /*флаг устанавливается для отслеживания частей речи, для которых в семантической модели нужно создать
-             узлы "Subject", "Action" или "Relation"*/
             /*узел определённого типа создаётся в зависимости от части речи слова; текущий узел заносится в список использованных*/
-            switch(partOfSpeech){
+            addNode(body,currentNode,versions,lexeme,edges,partOfSpeech,lemma,i);
+
+            /*хак для определения подчинительного союза*/
+            if((edges.length!=0) && (i > 0)) {
+                edge = $(currentNode).prev();
+                name = edge[0].getAttribute('name'); 
+                if(name == 'SUBORDINATE_CLAUSE_link') {
+                    subordinateClauseflag = 1;
+                }                    
+            }
+
+             if(subordinateClauseflag) {
+                children = currentNode.querySelectorAll('children');
+                childrenLength =  children.length - 1;
+                lastChild = children[childrenLength];
+                lastChildNodes = lastChild.querySelectorAll('node');
+                lastChildNodesLength = lastChildNodes.length - 1;
+                lastChildLastNode = lastChildNodes[lastChildNodesLength];
+                versions = lastChildLastNode.querySelector('version');
+                lexeme = lastChildLastNode.querySelector('lexeme').textContent;
+                edges = lastChildLastNode.querySelectorAll('edge');
+                partOfSpeech = 'СОЮЗ';
+                lemma = versions.getAttribute('lemma');
+
+                currentNode = lastChildLastNode;
+                addNode(body,currentNode,versions,lexeme,edges,partOfSpeech,lemma,i);
+
+                // body.appendChild(newSymbol);  
+                // body.appendChild(br); 
+                // addChildSymbol("<Type>","Relation",body);
+                // flag=1; 
+                // usedNodes.push(lastChild);
+            }
+
+                     
+        }
+
+        edges = initTree.find('edge');
+        /*задание узла <Connections>, содержащего информацию о связях всех узлов семантической модели*/
+        addConnections(nodes,edges,body,br,usedNodes);
+
+        /*закрыть узел <Schema>*/
+        resultTree = document.createTextNode('</Schema>');
+        body.appendChild(resultTree); 
+        body.appendChild(br);
+
+        /*создать элемент для хранения текста из временного хранилища семантической модели*/
+        var newBody = body.innerText;  
+        console.log('file №1 was built');
+        /*отправка готовой модели на сервер для сохранения во внешний файл*/
+        sendXML(newBody);
+        var output = document.getElementById('output-built');
+        output.innerText = 'Граф №1 построен и сохранён';
+        body.style.visibility = 'hidden';
+    };
+
+    function addNode(body,currentNode,versions,lexeme,edges,partOfSpeech,lemma,i) {
+        var flag=0; /*флаг устанавливается для отслеживания частей речи, для которых в семантической модели нужно создать
+             узлы "Subject", "Action" или "Relation"*/
+        var br = document.createElement('p');
+        switch(partOfSpeech){
                 case 'СУЩЕСТВИТЕЛЬНОЕ': {
                     body.appendChild(newSymbol);  
                     body.appendChild(br); 
@@ -227,7 +287,11 @@ window.onload = function() {
                             addChildSymbol("<Type>","Action",body); //Action??
                             flag=1; 
                             usedNodes.push(currentNode); 
-                        }                     
+                        } 
+                        // /*хак для определения подчинительного союза*/
+                        // if(name == 'SUBORDINATE_CLAUSE_link') {
+                        //     subordinateClauseflag = 1;
+                        // }                    
                     }
                     break;
                 }
@@ -293,7 +357,7 @@ window.onload = function() {
                     lemma = child.querySelector('version').getAttribute('lemma'); 
                     
                     /*если значение свойства "имя ребра" для текущего узла - прилагательное или деепричастие*/
-                    if(((edgeName=='ATTRIBUTE_link')||(edgeName=='NEXT_ADJECTIVE_link'))&&(parLexeme==lexeme)) {
+                    if(((edgeName=='ATTRIBUTE_link')||(edgeName=='NEXT_ADJECTIVE_link') || (edgeName == 'SUBORDINATE_CLAUSE_link'))&&(parLexeme==lexeme)) {
                         
                         newProp = document.createTextNode('<Property>');
                         body.appendChild(newProp); 
@@ -324,44 +388,28 @@ window.onload = function() {
             /*если флаг был выставлен, определяются связи текущего узла на основании связанных с ним рёбер*/
             if(flag) { 
                 for(var w=0;w<edges.length;w++) {                    
-                    newPar = edges[w].parentElement.parentElement;
-                    newchild = edges[w].nextSibling.nextSibling;
-                    newParLexeme = newPar.querySelector('lexeme').textContent;
-                    newChildLexeme = newchild.querySelector('lexeme').textContent;
+                    par = edges[w].parentElement.parentElement;
+                    parLexeme = par.querySelector('lexeme').textContent;
                     edgeName = edges[w].getAttribute('name');
                     if((edgeName=='ATTRIBUTE_link')||(edgeName=='NEXT_ADJECTIVE_link')||(edgeName=='PUNCTUATION_link')) {
                        //console.log('no'); 
                     } else {
-                        if((newParLexeme==lexeme)) {
+                        if(edgeName == 'SUBORDINATE_CLAUSE_link') {
+                            newPar = par.parentElement.parentElement;
+                            newParLexeme = newPar.querySelector('lexeme').textContent;
+                            parLexeme = newParLexeme;
+                        }
+                        if((parLexeme == lexeme)) {
                             /*добавление контакта по выбранному ребру */
                             addContacts(edges[w],body);
                         }
                     }
                 }                
-            }
+            } 
 
             /*смещение каждого нового узла изменяется для удобства просмотра готовой модели в программе URZ*/
-            currY-=100;           
-        }
-
-        edges = initTree.find('edge');
-        /*задание узла <Connections>, содержащего информацию о связях всех узлов семантической модели*/
-        addConnections(nodes,edges,body,br,usedNodes);
-
-        /*закрыть узел <Schema>*/
-        resultTree = document.createTextNode('</Schema>');
-        body.appendChild(resultTree); 
-        body.appendChild(br);
-
-        /*создать элемент для хранения текста из временного хранилища семантической модели*/
-        var newBody = body.innerText;  
-        console.log('file №1 was built');
-        /*отправка готовой модели на сервер для сохранения во внешний файл*/
-        sendXML(newBody);
-        var output = document.getElementById('output-built');
-        output.innerText = 'Граф №1 построен и сохранён';
-        body.style.visibility = 'hidden';
-    };
+            currY-=100; 
+    }
 
     /*функция для передачи списка синонимов в глобальную область видимости после асинхронной загрузки*/
     function useSynonyms(result) {
@@ -727,9 +775,14 @@ window.onload = function() {
             
             par = edge.parentElement.parentElement;
             if(par.querySelector('version').getAttribute('pos') == 'ПУНКТУАТОР') {
-                continue;
+                if(edgeName == 'SUBORDINATE_CLAUSE_link') {
+                    var newPar = par.parentElement.parentElement;
+                    par = newPar;
+                } else {
+                    continue;
+                }
             }
-
+            
             child = edge.nextSibling.nextSibling;
             if(child.querySelector('version').getAttribute('pos') == 'ПУНКТУАТОР') {
                 if(child.children[2]) {
@@ -739,6 +792,18 @@ window.onload = function() {
                     console.log(par);
                 } else continue;
             }
+            if(edgeName == 'SUBORDINATE_CLAUSE_link') {
+                children = child.querySelectorAll('children');
+                childrenLength =  children.length - 1;
+                lastChild = children[childrenLength];
+                lastChildNodes = lastChild.querySelectorAll('node');
+                lastChildNodesLength = lastChildNodes.length - 1;
+                lastChildLastNode = lastChildNodes[lastChildNodesLength];
+                child = lastChildLastNode;
+            }
+
+            // console.log('par', par);
+            // console.log('child', child);
 
             caseType = child.querySelector('version').getAttribute('coordStateName');
             
@@ -892,7 +957,6 @@ window.onload = function() {
         var edgeName=null,
             nodeName=null;
                 edgeName = edge.getAttribute('name');
-                
                 nodeName = document.createTextNode("<Contact>");  
                 body.appendChild(nodeName);
 
