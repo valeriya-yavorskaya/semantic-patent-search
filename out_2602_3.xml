@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataroot>
+<dependencies>
+<node>
+<lexeme position='1'>купила</lexeme>
+<versions count='1'>
+<version lemma='купить' coordStateName='nothing' pos='ГЛАГОЛ'/>
+</versions>
+<children count='3'>
+<edge name='OBJECT_link'></edge>
+<node>
+<lexeme position='2'>книгу</lexeme>
+<versions count='1'>
+<version lemma='книга' coordStateName='ACCUSATIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+</node>
+<edge name='SUBJECT_link'></edge>
+<node>
+<lexeme position='0'>Я</lexeme>
+<versions count='1'>
+<version lemma='я' coordStateName='NOMINATIVE_CASE_ru' pos='МЕСТОИМЕНИЕ'/>
+</versions>
+</node>
+<edge name='NEXT_CLAUSE_link'></edge>
+<node>
+<lexeme position='3'>,</lexeme>
+<versions count='1'>
+<version lemma=',' coordStateName='nothing' pos='ПУНКТУАТОР'/>
+</versions>
+<children count='1'>
+<edge name='NEXT_COLLOCATION_ITEM_link'></edge>
+<node>
+<lexeme position='4'>потому что</lexeme>
+<versions count='1'>
+<version lemma='потому что' coordStateName='nothing' pos='СОЮЗ'/>
+</versions>
+<children count='1'>
+<edge name='NEXT_COLLOCATION_ITEM_link'></edge>
+<node>
+<lexeme position='6'>хотела</lexeme>
+<versions count='1'>
+<version lemma='хотеть' coordStateName='nothing' pos='ГЛАГОЛ'/>
+</versions>
+<children count='1'>
+<edge name='ATTRIBUTE_link'></edge>
+<node>
+<lexeme position='5'>давно</lexeme>
+<versions count='1'>
+<version lemma='давно' coordStateName='nothing' pos='НАРЕЧИЕ'/>
+</versions>
+</node>
+</children>
+</node>
+</children>
+</node>
+</children>
+</node>
+</children>
+</node>
+</dependencies>
+</dataroot>

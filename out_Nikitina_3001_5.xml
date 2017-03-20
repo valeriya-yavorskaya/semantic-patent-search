@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataroot>
+<dependencies>
+<node>
+<lexeme position='2'>относится</lexeme>
+<versions count='1'>
+<version lemma='относиться' coordStateName='nothing' pos='ГЛАГОЛ'/>
+</versions>
+<children count='2'>
+<edge name='PREPOS_ADJUNCT_link'></edge>
+<node>
+<lexeme position='3'>к</lexeme>
+<versions count='1'>
+<version lemma='к' coordStateName='nothing' pos='ПРЕДЛОГ'/>
+</versions>
+<children count='1'>
+<edge name='OBJECT_link'></edge>
+<node>
+<lexeme position='5'>устройству</lexeme>
+<versions count='1'>
+<version lemma='устройство' coordStateName='DATIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+<children count='2'>
+<edge name='ATTRIBUTE_link'></edge>
+<node>
+<lexeme position='4'>подсвечивающему</lexeme>
+<versions count='1'>
+<version lemma='подсвечивающий' coordStateName='nothing' pos='ПРИЛАГАТЕЛЬНОЕ'/>
+</versions>
+</node>
+<edge name='ADJ_PARTICIPLE_link'></edge>
+<node>
+<lexeme position='7'>используемому</lexeme>
+<versions count='1'>
+<version lemma='используемый' coordStateName='nothing' pos='ПРИЛАГАТЕЛЬНОЕ'/>
+</versions>
+<children count='2'>
+<edge name='PREPOS_ADJUNCT_link'></edge>
+<node>
+<lexeme position='8'>в</lexeme>
+<versions count='1'>
+<version lemma='в' coordStateName='nothing' pos='ПРЕДЛОГ'/>
+</versions>
+<children count='1'>
+<edge name='OBJECT_link'></edge>
+<node>
+<lexeme position='9'>качестве</lexeme>
+<versions count='1'>
+<version lemma='качество' coordStateName='PREPOSITIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+<children count='1'>
+<edge name='RIGHT_GENITIVE_OBJECT_link'></edge>
+<node>
+<lexeme position='10'>источника</lexeme>
+<versions count='1'>
+<version lemma='источник' coordStateName='GENITIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+<children count='1'>
+<edge name='RIGHT_GENITIVE_OBJECT_link'></edge>
+<node>
+<lexeme position='11'>света</lexeme>
+<versions count='1'>
+<version lemma='свет' coordStateName='GENITIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+<children count='1'>
+<edge name='RIGHT_GENITIVE_OBJECT_link'></edge>
+<node>
+<lexeme position='12'>дисплея</lexeme>
+<versions count='1'>
+<version lemma='дисплей' coordStateName='GENITIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+</node>
+</children>
+</node>
+</children>
+</node>
+</children>
+</node>
+</children>
+</node>
+<edge name='PUNCTUATION_link'></edge>
+<node>
+<lexeme position='6'>,</lexeme>
+<versions count='1'>
+<version lemma=',' coordStateName='nothing' pos='ПУНКТУАТОР'/>
+</versions>
+</node>
+</children>
+</node>
+</children>
+</node>
+</children>
+</node>
+<edge name='SUBJECT_link'></edge>
+<node>
+<lexeme position='1'>изобретение</lexeme>
+<versions count='1'>
+<version lemma='изобретение' coordStateName='NOMINATIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+<children count='1'>
+<edge name='ATTRIBUTE_link'></edge>
+<node>
+<lexeme position='0'>Настоящее</lexeme>
+<versions count='1'>
+<version lemma='настоящий' coordStateName='nothing' pos='ПРИЛАГАТЕЛЬНОЕ'/>
+</versions>
+</node>
+</children>
+</node>
+</children>
+</node>
+</dependencies>
+</dataroot>

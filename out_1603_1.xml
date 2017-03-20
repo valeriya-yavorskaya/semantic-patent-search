@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataroot>
+<dependencies>
+<node>
+<lexeme position='8'>позволяет</lexeme>
+<versions count='1'>
+<version lemma='позволять' coordStateName='nothing' pos='ГЛАГОЛ'/>
+</versions>
+<children count='1'>
+<edge name='SUBJECT_link'></edge>
+<node>
+<lexeme position='0'>Программа</lexeme>
+<versions count='1'>
+<version lemma='программа' coordStateName='NOMINATIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+<children count='1'>
+<edge name='ATTRIBUTE_link'></edge>
+<node>
+<lexeme position='1'>,</lexeme>
+<versions count='1'>
+<version lemma=',' coordStateName='nothing' pos='ПУНКТУАТОР'/>
+</versions>
+<children count='1'>
+<edge name='SUBORDINATE_CLAUSE_link'></edge>
+<node>
+<lexeme position='5'>построен</lexeme>
+<versions count='1'>
+<version lemma='построенный' coordStateName='NOMINATIVE_CASE_ru' pos='ПРИЛАГАТЕЛЬНОЕ'/>
+</versions>
+<children count='3'>
+<edge name='SUBJECT_link'></edge>
+<node>
+<lexeme position='6'>комплекс</lexeme>
+<versions count='1'>
+<version lemma='комплекс' coordStateName='NOMINATIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+</node>
+<edge name='PREPOS_ADJUNCT_link'></edge>
+<node>
+<lexeme position='2'>на</lexeme>
+<versions count='1'>
+<version lemma='на' coordStateName='nothing' pos='ПРЕДЛОГ'/>
+</versions>
+<children count='1'>
+<edge name='OBJECT_link'></edge>
+<node>
+<lexeme position='3'>основе</lexeme>
+<versions count='1'>
+<version lemma='основа' coordStateName='PREPOSITIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+<children count='1'>
+<edge name='RIGHT_GENITIVE_OBJECT_link'></edge>
+<node>
+<lexeme position='4'>которой</lexeme>
+<versions count='1'>
+<version lemma='который' coordStateName='GENITIVE_CASE_ru' pos='ПРИЛАГАТЕЛЬНОЕ'/>
+</versions>
+</node>
+</children>
+</node>
+</children>
+</node>
+<edge name='PUNCTUATION_link'></edge>
+<node>
+<lexeme position='7'>,</lexeme>
+<versions count='1'>
+<version lemma=',' coordStateName='nothing' pos='ПУНКТУАТОР'/>
+</versions>
+</node>
+</children>
+</node>
+</children>
+</node>
+</children>
+</node>
+</children>
+</node>
+</dependencies>
+</dataroot>
