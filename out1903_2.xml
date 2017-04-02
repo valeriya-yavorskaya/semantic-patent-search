@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataroot>
+<dependencies>
+<node>
+<lexeme position='1'>сделал</lexeme>
+<versions count='1'>
+<version lemma='сделать' coordStateName='nothing' pos='ГЛАГОЛ'/>
+</versions>
+<children count='3'>
+<edge name='OBJECT_link'></edge>
+<node>
+<lexeme position='2'>это</lexeme>
+<versions count='1'>
+<version lemma='это' coordStateName='nothing' pos='МЕСТОИМ_СУЩ'/>
+</versions>
+</node>
+<edge name='ATTRIBUTE_link'></edge>
+<node>
+<lexeme position='3'>тогда</lexeme>
+<versions count='1'>
+<version lemma='тогда' coordStateName='nothing' pos='НАРЕЧИЕ'/>
+</versions>
+<children count='2'>
+<edge name='PUNCTUATION_link'></edge>
+<node>
+<lexeme position='4'>,</lexeme>
+<versions count='1'>
+<version lemma=',' coordStateName='nothing' pos='ПУНКТУАТОР'/>
+</versions>
+</node>
+<edge name='SUBORDINATE_CLAUSE_link'></edge>
+<node>
+<lexeme position='6'>пришло</lexeme>
+<versions count='1'>
+<version lemma='прийти' coordStateName='nothing' pos='ГЛАГОЛ'/>
+</versions>
+<children count='2'>
+<edge name='SUBJECT_link'></edge>
+<node>
+<lexeme position='7'>время</lexeme>
+<versions count='1'>
+<version lemma='время' coordStateName='NOMINATIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
+</versions>
+</node>
+<edge name='ATTRIBUTE_link'></edge>
+<node>
+<lexeme position='5'>когда</lexeme>
+<versions count='1'>
+<version lemma='когда' coordStateName='nothing' pos='НАРЕЧИЕ'/>
+</versions>
+</node>
+</children>
+</node>
+</children>
+</node>
+<edge name='SUBJECT_link'></edge>
+<node>
+<lexeme position='0'>Я</lexeme>
+<versions count='1'>
+<version lemma='я' coordStateName='NOMINATIVE_CASE_ru' pos='МЕСТОИМЕНИЕ'/>
+</versions>
+</node>
+</children>
+</node>
+</dependencies>
+</dataroot>
