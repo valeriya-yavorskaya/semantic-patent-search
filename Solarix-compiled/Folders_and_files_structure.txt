@@ -1,0 +1,8 @@
+Folders_and_files_structure.txt
+input.txt
+sqlite.dll
+solarix_grammar_engine.dll
+ParseLine.exe
+out.xml
+/dictionary
+/lib
