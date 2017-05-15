@@ -30,7 +30,7 @@ function compareModels(file, newBody) {
         var midSimilarity = (similarityInWords + similarityInEdges) / 2;
 
         var output = document.getElementById('output-result');
-        output.innerText = 'Граф №1 и граф №2 схожи на ' + midSimilarity + '%';
+        output.innerText = 'Модель №1 и модель №2 схожи на ' + midSimilarity + '%';
      })
 }
 

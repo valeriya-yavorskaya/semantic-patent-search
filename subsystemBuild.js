@@ -64,6 +64,7 @@
 
         nodes = initTree.find( "node" ); /*все узлы синтаксической модели*/
         nodesCount = nodes.length; 
+        /*задание узлов для хранения информации о узлах семантической модели*/
         buildClause(nodes, nodesCount, body);
 
         edges = initTree.find('edge');
@@ -81,7 +82,7 @@
         /*отправка готовой модели на сервер для сохранения во внешний файл*/
         sendXML(newBody);
         var output = document.getElementById('output-built');
-        output.innerText = 'Граф №1 построен и сохранён';
+        output.innerText = 'Модель №1 была построена и сохранена';
         body.style.visibility = 'hidden';
         return newBody;
     };

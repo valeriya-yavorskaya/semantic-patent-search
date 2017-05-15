@@ -10,23 +10,21 @@
     </head>
     <body> 
         <div class='main-content'>
-            <h2 class = 'header'>Сравнение двух семантических моделей</h2>
+            <h2 class = 'header'>Поиск патентов</h2>
+            <h3 class = 'sub-header'>Система патентного поиска по прагматическим семантическим рефератам патентов</h3>
 
             <p class = 'paragraph'>Загрузить синтактическую модель и построить семантическую модель</p>
             <input type = 'file' id='userGraph'>
             <button id='take-graph' class = 'button-action'>Загрузить и построить</button>
-            <p class = 'paragraph'>Результат построения модели №1</p>         
+            <p class = 'paragraph'>Результаты построения модели</p>         
             <textarea id = 'output-built'></textarea>
 
-            <p class = 'paragraph'>Загрузить модель №2 для сравнения</p>
-            <input type = 'file' id = 'userFile'>
-
-            <button id = 'take-xml' class = 'button-action'>Сравнить</button>
-            <p class = 'paragraph'>Результат сравнения</p>
+            <button id = 'take-xml' class = 'button-action'>Найти патенты</button>
+            <p class = 'paragraph'>Результат поиска в базе</p>
             <textarea id = 'output-result'></textarea>
 
             <button id = 'reload' class = 'button-action'>Попробовать ещё раз</button>
-            <a class = 'link-action' href='secondPage.html'>>>Отбор патентов из базы</a>
+            <a class = 'link-action' href='index.html'><<Сравнение двух семантических моделей</a>
 
             <div id = 'container'></div>
         </div>
