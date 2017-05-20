@@ -53,15 +53,9 @@ router.post('/', function(req, res, next) {
             }
         } 
         res.send(JSON.stringify(synonyms));  
-        console.log('synonyms sent');   
+        console.log('synonyms sent');
     });
 });
-
-// router.post('/', function(req, res, next) {
-//     res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept");
-//     res.header("Access-Control-Allow-Origin", "*");
-
-// });
 
 router.options('/',function (req,res,next) {
   res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept, Authorization");

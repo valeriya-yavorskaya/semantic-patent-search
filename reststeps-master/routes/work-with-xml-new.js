@@ -10,21 +10,21 @@ router.data = {
   initTree: null,
 }
 
-router.get('/', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");    
+// router.get('/', function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");    
 
-    mainPath+='../../1.xml';
+//     mainPath+='../../1.xml';
     
-    var myPath = [];
-    for (var i=0;i<mainPath.length;i++) {
-                if(mainPath[i]=='\\') {
-                    myPath.push('/');
-                } else myPath.push(mainPath[i]);
-    }
+//     var myPath = [];
+//     for (var i=0;i<mainPath.length;i++) {
+//                 if(mainPath[i]=='\\') {
+//                     myPath.push('/');
+//                 } else myPath.push(mainPath[i]);
+//     }
 
-    res.send(myPath);
+//     res.send(myPath);
 
-});
+// });
 
 router.post('/', function(req, res, next) {
     var fs = require('fs');

@@ -11,15 +11,15 @@
     <body> 
         <div class='main-content'>
             <h2 class = 'header'>Поиск патентов</h2>
-            <h3 class = 'sub-header'>Система патентного поиска по прагматическим семантическим рефератам патентов</h3>
+            <h3 class = 'sub-header'>Система патентного поиска по прагматическим семантическим моделям рефератов патентов</h3>
 
-            <p class = 'paragraph'>Загрузить синтактическую модель и построить семантическую модель</p>
-            <input type = 'file' id='userGraph'>
-            <button id='take-graph' class = 'button-action'>Загрузить и построить</button>
+            <p class = 'paragraph'>Загрузить текст патента и построить семантическую модель</p>
+            <input type = 'file' id='userText'>
+            <button id='take-text' class = 'button-action'>Загрузить и построить</button>
             <p class = 'paragraph'>Результаты построения модели</p>         
             <textarea id = 'output-built'></textarea>
 
-            <button id = 'take-xml' class = 'button-action'>Найти патенты</button>
+            <button id = 'find-patents' class = 'button-action'>Найти патенты</button>
             <p class = 'paragraph'>Результат поиска в базе</p>
             <textarea id = 'output-result'></textarea>
 
@@ -31,5 +31,6 @@
         <script src='app.js'></script>
         <script src='subsystemBuild.js'></script>
         <script src='subsystemCompare.js'></script>
+        <script src='subsystemBase.js'></script>
     </body>
 </html>

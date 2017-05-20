@@ -684,3 +684,25 @@
         });
 
     };
+
+    function sendText(userText) {
+        $.post('http://localhost:8888/launch-solarix', {
+                text:  userText,
+            }).then(function (res) {
+                console.log(res);
+                takeXML();
+            }, function (reason) {
+                console.log(reason);
+        });
+    };
+
+    function takeXML() {
+        $.get('http://localhost:8888/launch-solarix', {
+            }).then(function (res) {
+                console.log('syntax model was built');
+                fileParse(res);
+            }, function (reason) {
+                console.log(reason);
+        });
+
+    };
