@@ -7,6 +7,9 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var workWithXML = require('./routes/work-with-xml-new');
+var workWithDictionary = require('./routes/work-with-dictionary');
+var launchSolarix = require('./routes/launch-solarix');
+var patentSearch = require('./routes/patent-search');
 
 var app = express();
 
@@ -24,6 +27,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/work-with-xml', workWithXML);
+app.use('/work-with-dictionary', workWithDictionary);
+app.use('/launch-solarix', launchSolarix);
+app.use('/patent-search', patentSearch);
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
