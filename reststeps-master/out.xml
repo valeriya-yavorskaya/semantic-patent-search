@@ -1,36 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<dataroot>
-<dependencies>
-<node>
-<lexeme position='1'>увидел</lexeme>
-<versions count='1'>
-<version lemma='увидеть' coordStateName='nothing' pos='ГЛАГОЛ'/>
-</versions>
-<children count='2'>
-<edge name='OBJECT_link'></edge>
-<node>
-<lexeme position='3'>яблоко</lexeme>
-<versions count='1'>
-<version lemma='яблоко' coordStateName='ACCUSATIVE_CASE_ru' pos='СУЩЕСТВИТЕЛЬНОЕ'/>
-</versions>
-<children count='1'>
-<edge name='ATTRIBUTE_link'></edge>
-<node>
-<lexeme position='2'>красное</lexeme>
-<versions count='1'>
-<version lemma='красный' coordStateName='ACCUSATIVE_CASE_ru' pos='ПРИЛАГАТЕЛЬНОЕ'/>
-</versions>
-</node>
-</children>
-</node>
-<edge name='SUBJECT_link'></edge>
-<node>
-<lexeme position='0'>Я</lexeme>
-<versions count='1'>
-<version lemma='я' coordStateName='NOMINATIVE_CASE_ru' pos='МЕСТОИМЕНИЕ'/>
-</versions>
-</node>
-</children>
-</node>
-</dependencies>
-</dataroot>
+version https://git-lfs.github.com/spec/v1
+oid sha256:15105ba84068bbc7fa1e7da8d0c0df0788ac01e147c060f3ac20abd288d6f0e9
+size 1029
