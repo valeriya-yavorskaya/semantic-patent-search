@@ -1,8 +1,3 @@
-#if !defined LEMMATIZATOR_FLAGS__H
- #define LEMMATIZATOR_FLAGS__H
-
- #define LEME_DEFAULT 0x00000000
- #define LEME_FASTER  0x00000001
- #define LEME_FASTEST 0x00000002
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:076ef1fbc97be5cf90d36c3be876a93d3214c2afa3f3eb73295729c3f99d2e35
+size 182

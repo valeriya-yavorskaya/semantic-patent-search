@@ -1,5 +1,3 @@
-1. Install npm and Node js from official sites
-2. Open cmd
-3. Switch to folder 'reststeps-master' and run 'npm i'
-4. After installation finish run 'npm start'
-5. Open 'localhost:3000' in your browser
+version https://git-lfs.github.com/spec/v1
+oid sha256:a94857d769d89f4f635bd3b7245f7543ee22b8be2e6ecce7288ecaba6cfb794b
+size 203

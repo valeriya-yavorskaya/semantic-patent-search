@@ -1,8 +1,3 @@
-Folders_and_files_structure.txt
-input.txt
-sqlite.dll
-solarix_grammar_engine.dll
-ParseLine.exe
-out.xml
-/dictionary
-/lib
+version https://git-lfs.github.com/spec/v1
+oid sha256:22a5ed494a3db05ca1303e86e781e77ef54a2276f1709e0615fc27cc36602aaf
+size 125
