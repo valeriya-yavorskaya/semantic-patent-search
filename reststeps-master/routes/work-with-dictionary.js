@@ -20,8 +20,8 @@ router.post('/', function(req, res, next) {
         synonyms = {};
     console.log(initialWords);
 
-    // router.data.dictionaryPath = '../dic/synmaster/synmaster.txt';
-    router.data.dictionaryPath = '../dic/synmaster/example.txt';
+    // router.data.dictionaryPath = 'dic/synmaster/synmaster.txt';
+    router.data.dictionaryPath = 'dic/synmaster/example.txt';
     fs.readFile(router.data.dictionaryPath, 'utf8', function(err, contents) {
         if(err) {
             return console.log(err);

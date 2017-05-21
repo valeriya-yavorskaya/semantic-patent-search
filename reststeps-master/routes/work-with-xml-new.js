@@ -10,22 +10,6 @@ router.data = {
   initTree: null,
 }
 
-// router.get('/', function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "*");    
-
-//     mainPath+='../../1.xml';
-    
-//     var myPath = [];
-//     for (var i=0;i<mainPath.length;i++) {
-//                 if(mainPath[i]=='\\') {
-//                     myPath.push('/');
-//                 } else myPath.push(mainPath[i]);
-//     }
-
-//     res.send(myPath);
-
-// });
-
 router.post('/', function(req, res, next) {
     var fs = require('fs');
 
@@ -46,18 +30,18 @@ router.post('/', function(req, res, next) {
     var encodedData = windows1251.encode(req.body.tree);
     var path = __filename;
 
-    fs.writeFile("../../нирм/URZ/output.sch", encodedData, 'ascii', function(err) {
+    fs.writeFile("output_sem_model.sch", encodedData, 'ascii', function(err) {
         if(err) {
             return console.log(err);
         }
-        console.log("The file was saved!");
+        console.log("The .sch file was saved!");
     }); 
 
-    fs.writeFile("../output.xml", encodedData, 'ascii', function(err) {
+    fs.writeFile("output_sem_model.xml", encodedData, 'ascii', function(err) {
         if(err) {
             return console.log(err);
         }
-        console.log("The file was saved!");
+        console.log("The .xml file was saved!");
     });
 
 });
