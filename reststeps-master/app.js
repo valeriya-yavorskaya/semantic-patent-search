@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var workWithXML = require('./routes/work-with-xml-new');
 var workWithDictionary = require('./routes/work-with-dictionary');
+var workWithBase = require('./routes/work-with-base');
 var launchSolarix = require('./routes/launch-solarix');
 var patentSearch = require('./routes/patent-search');
 
@@ -28,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/work-with-xml', workWithXML);
 app.use('/work-with-dictionary', workWithDictionary);
+app.use('/work-with-base', workWithBase);
 app.use('/launch-solarix', launchSolarix);
 app.use('/patent-search', patentSearch);
 

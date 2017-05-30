@@ -510,18 +510,6 @@ function compareModels(file, newBody) {
         globalSynonyms = obj;
     };
 
-
-    /*функция запроса синонимов с сервера */
-    // function getSynonyms(initialWords) {
-    //     $.post('http://localhost:8888/work-with-dictionary', {
-    //         words:  initialWords,
-    //     }).then( function (res) {
-    //         useSynonyms(res);
-    //     }, function (reason) {
-    //         console.log(reason);
-    //     });
-    // };
-
     function getSynonyms(initialWords) {
         return $.post('http://localhost:3000/work-with-dictionary', {
             words:  initialWords,

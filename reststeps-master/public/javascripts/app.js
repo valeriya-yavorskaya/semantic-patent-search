@@ -84,4 +84,19 @@ window.onload = function() {
         },false);
     }
 
+    var btn4 = document.getElementById('find-patents');
+    if(btn4) {    
+        btn4.addEventListener("click", function() {
+            $(btn4).attr('disabled',true);
+            getKeyWords();
+        });
+    }
+
+    var textField1 = document.getElementById('input-keywords');
+    if(textField1) {
+        textField1.addEventListener('blur', function(event) {
+            getInnerKeyWords(event.target.value);
+        });
+    }
+
 }
