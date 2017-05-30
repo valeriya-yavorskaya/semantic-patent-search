@@ -17,7 +17,8 @@ router.get('/keyWords', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*"); 
     res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept");
 
-    connection.query('SELECT Number FROM tbl_document; SELECT keyWords FROM tbl_document', function (error, results, fields) {
+    // connection.query('SELECT Number FROM tbl_document; SELECT keyWords FROM tbl_document', function (error, results, fields) {
+    connection.query('SELECT Number, keyWords FROM tbl_document', function (error, results, fields) {
         if (error) throw error;
         res.send(results);
     });
@@ -31,14 +32,36 @@ router.post('/abstracts', function(req, res, next) {
         query = '';
 
     if(typeof(numbers) == 'string') {
-      query = 'SELECT Abstract FROM abstracts WHERE (idabstract='+ numbers +');';
+      query = 'SELECT idabstract, Abstract FROM abstracts WHERE (idabstract='+ numbers +');';
     } else {
       for( var i = 0; i < numbers.length; i++) {
-        var newQuery = 'SELECT Abstract FROM abstracts WHERE (idabstract='+ numbers[i] +');';
+        var newQuery = 'SELECT idabstract, Abstract FROM abstracts WHERE (idabstract='+ numbers[i] +');';
         query += newQuery;
-      }
+      } 
     }       
 
+    connection.query(query, function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+    });
+});
+
+router.post('/models', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); 
+    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept");
+
+    var numbers = req.body['numbers[]'],
+        query = '';
+
+    if(typeof(numbers) == 'string') {
+      query = 'SELECT idsemanticModel, semanticModel FROM semanticmodels WHERE (idsemanticModel='+ numbers +');';
+    } else {
+      for( var i = 0; i < numbers.length; i++) {
+        var newQuery = 'SELECT idsemanticModel, semanticModel FROM semanticmodels WHERE (idsemanticModel='+ numbers[i] +');';
+        query += newQuery;
+      } 
+    }    
+    
     connection.query(query, function (error, results, fields) {
         if (error) throw error;
         res.send(results);

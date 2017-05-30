@@ -1,20 +1,18 @@
-var keyWords = [],
-    innerKeyWords = [],
-    numbersOfAbstractsToTake = [];
+var innerKeyWords = [];
 
 function getKeyWords() {
     $.get('http://localhost:3000/work-with-base/keyWords', {
     }).then(function (res) {
         console.log('keyWords were loaded');
-        workWithKeyWords(res);
+        workWithBase(res);
     }, function (reason) {
         console.log(reason);
     });
 };
 
-function getAbstracts(numbersOfAbstractsToTake) {
+function getAbstracts(numberOfPatentsToCompare) {
     $.post('http://localhost:3000/work-with-base/abstracts', {
-        numbers: numbersOfAbstractsToTake,
+        numbers: numberOfPatentsToCompare,
     }).then(function (res) {
         console.log('Abstracts were loaded');
         workWithAbstracts(res);
@@ -23,25 +21,70 @@ function getAbstracts(numbersOfAbstractsToTake) {
     });
 };
 
-function workWithAbstracts(queryResult) {
-    console.log(queryResult);
+function getModels(numberOfPatentsToCompare) {
+    $.post('http://localhost:3000/work-with-base/models', {
+        numbers: numberOfPatentsToCompare,
+    }).then(function (res) {
+        console.log('Models were loaded');
+        workWithModels(res);
+    }, function (reason) {
+        console.log(reason);
+    });
+};
+
+function workWithBase(queryResult) {
+    var numberOfPatentsToCompare = workWithKeyWords(queryResult);
+    getModels(numberOfPatentsToCompare);    
+}
+
+function workWithModels(queryResult) {
     if(queryResult.length == 1) {
         queryResult[0] = [queryResult[0]];
     }
-    abstractsArray = joinAbstractsAndNumbers(numbersOfAbstractsToTake, queryResult);
-    console.log(abstractsArray);
-}
-
-function workWithKeyWords(queryResult) {
-    keyWords = joinKeyWordsAndNumbers(queryResult[0], queryResult[1]);
-    compareKeyWords(innerKeyWords, keyWords);
-    numbersOfAbstractsToTake = [];
-    for( var i = 0; i < keyWords.length; i++) { 
-        if(keyWords[i].similarity != 0) {
-            numbersOfAbstractsToTake[numbersOfAbstractsToTake.length] = keyWords[i].number.Number;
+    var numbersOfAbstractsToTake = [];  
+    for(var i = 0; i < queryResult.length; i++) {
+        if(queryResult[i][0].semanticModel === null) {
+            console.log('model doesn\'t exist');
+            numbersOfAbstractsToTake[numbersOfAbstractsToTake.length] = queryResult[i][0].idsemanticModel;
+        } else {
+            console.log('model exist');
         }
     }
     getAbstracts(numbersOfAbstractsToTake);
+}
+
+function workWithAbstracts(queryResult) {
+    if(queryResult.length == 1) {
+        queryResult[0] = [queryResult[0]];
+    }    
+    console.log(queryResult);
+    var similarityArray = [];
+    for(var i = 0; i< queryResult.length; i++) {
+        similarityArray[i] = {};
+        similarityArray[i].number = queryResult[i][0].idabstract;
+        similarityArray[i].syntaxModel = [];
+        // similarityArray[i].semanticModel = queryResult[i][0];
+        // similarityArray[i].similarity = queryResult[i][0];
+    }
+    console.log(similarityArray);
+}
+
+function workWithKeyWords(queryResult) {
+    outerKeyWords = [];
+    for (var i = 0; i < queryResult.length; i++) {
+        outerKeyWords[i] = {};
+        outerKeyWords[i].keyWords = queryResult[i].keyWords.split(','); 
+        outerKeyWords[i].number =  queryResult[i].Number;
+
+    }
+    compareKeyWords(innerKeyWords, outerKeyWords);
+    numberOfPatentsToCompare = [];
+    for( var i = 0; i < outerKeyWords.length; i++) { 
+        if(outerKeyWords[i].similarity != 0) {
+            numberOfPatentsToCompare[numberOfPatentsToCompare.length] = outerKeyWords[i].number;
+        }
+    }
+    return numberOfPatentsToCompare;
 }
 
 function compareKeyWords(innerKeyWords, keyWords) {
@@ -60,27 +103,6 @@ function compareArrays(array, innerArray) {
         }
     }
     return similarity;
-}
-
-function joinKeyWordsAndNumbers(arrayNumbers, arrayKeyWords) {
-    var newKeyWords = [];
-    for( var i = 0; i < arrayNumbers.length; i++) {
-        newKeyWords[i] = {};
-        newKeyWords[i].number = arrayNumbers[i];
-        newKeyWords[i].keyWords = arrayKeyWords[i].keyWords.split(',');
-        newKeyWords[i].similarity = 0;
-    }
-    return newKeyWords;
-}
-
-function joinAbstractsAndNumbers(arrayNumbers, arrayAbstracts) {
-    var newArray = [];
-    for( var i = 0; i < arrayNumbers.length; i++) {
-        newArray[i] = {};
-        newArray[i].number = arrayNumbers[i];
-        newArray[i].abstract = arrayAbstracts[i][0].Abstract;
-    }
-    return newArray;
 }
 
 function getInnerKeyWords(array) {
