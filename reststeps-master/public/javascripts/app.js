@@ -17,8 +17,24 @@ window.onload = function() {
                     reader.onload = function(event) {
                         newXML = event.target.result;
                         console.log('initial graph was loaded');
-                        /* вызов подсистемы Построение */
-                        newBody = fileParse(newXML);
+                        /* вызов подсистемы Построение */ 
+                        var promise = new Promise( function(resolve, reject) {
+                            /*создать элемент для хранения текста из временного хранилища семантической модели*/
+                            newBody = fileParse(newXML);
+                            /*отправка готовой модели на сервер для сохранения во внешний файл*/
+                            var p = sendXML(newBody); 
+                            p.then(function (res) {
+                                console.log('file №1 was saved');
+                                resolve(res);
+                            }, function (reason) {
+                                console.log(reason);
+                                reject(reason);
+                            });
+                        });  
+
+                        promise.then(function(res) {
+                            displayBuildingResult();
+                        });                      
                     }
                     reader.onerror = function(event) {
                         console.error("Файл не может быть прочитан! код " + event.target.error.code);
@@ -72,7 +88,20 @@ window.onload = function() {
                     var loadedFile = event.target.result;                                       
                     console.log('text file was loaded');
                     /* Вызов подсистемы Построение */
-                    sendText(loadedFile);
+                    var p1 = sendText(loadedFile);        
+                    p1.then(function (res) {
+                            console.log(res);
+                            var p2 = takeXML();
+                            p2.then(function (res) {
+                                    console.log('syntax model was built');
+                                    var newBody = fileParse(res);
+                                    displayBuildingResult();
+                                }, function (reason) {
+                                    console.log(reason);
+                            });
+                        }, function (reason) {
+                            console.log(reason);
+                    });                                                        
                 }
                 
                 reader.onerror = function(event) {
@@ -99,4 +128,15 @@ window.onload = function() {
         });
     }
 
+    function hideContainer() {
+        var body = document.getElementById('container');
+        body.style.display = 'none';
+    }
+
+    function displayBuildingResult() {
+        hideContainer();
+        console.log('file №1 was built');
+        var output = document.getElementById('output-built');
+        output.innerText = 'Семантическая модель была построена и сохранена';
+    }
 }

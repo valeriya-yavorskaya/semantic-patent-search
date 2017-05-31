@@ -75,16 +75,21 @@
         resultTree = document.createTextNode('</Schema>');
         body.appendChild(resultTree); 
         body.appendChild(br);
-
-        /*создать элемент для хранения текста из временного хранилища семантической модели*/
-        var newBody = body.innerText; 
-        console.log('file №1 was built');
-        /*отправка готовой модели на сервер для сохранения во внешний файл*/
-        sendXML(newBody);
-        var output = document.getElementById('output-built');
-        output.innerText = 'Семантическая модель была построена и сохранена';
-        // body.style.visibility = 'hidden';
-        body.style.display = 'none';
+        
+        // return new Promise( function(resolve, reject) {
+        //     /*создать элемент для хранения текста из временного хранилища семантической модели*/
+        //     var newBody = body.innerText;
+        //     /*отправка готовой модели на сервер для сохранения во внешний файл*/
+        //     var p = sendXML(newBody); 
+        //     p.then(function (res) {
+        //         console.log('file №1 was saved');
+        //         resolve(res);
+        //     }, function (reason) {
+        //         console.log(reason);
+        //         reject(reason);
+        //     });
+        // });
+        var newBody = body.innerText;
         return newBody;
     };
 
@@ -676,34 +681,17 @@
 
     /*асинхронная отправка XML на сервер*/
     function sendXML(thisTree) {
-        $.post('http://localhost:3000/work-with-xml', {
-                tree:  thisTree,
-            }).then(function (res) {
-                console.log('file №1 was saved');
-            }, function (reason) {
-                console.log(reason);
+        return $.post('http://localhost:3000/work-with-xml', {
+                tree:  thisTree
         });
-
-    };
+    }
 
     function sendText(userText) {
-        $.post('http://localhost:3000/launch-solarix', {
-                text:  userText,
-            }).then(function (res) {
-                console.log(res);
-                takeXML();
-            }, function (reason) {
-                console.log(reason);
+        return $.post('http://localhost:3000/launch-solarix', {
+                text:  userText
         });
-    };
+    }
 
     function takeXML() {
-        $.get('http://localhost:3000/launch-solarix', {
-            }).then(function (res) {
-                console.log('syntax model was built');
-                fileParse(res);
-            }, function (reason) {
-                console.log(reason);
-        });
-
-    };
+        return $.get('http://localhost:3000/launch-solarix');
+    }

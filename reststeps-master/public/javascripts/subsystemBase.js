@@ -1,4 +1,5 @@
-var innerKeyWords = [];
+var innerKeyWords = [],
+    newModels = [];
 
 function getKeyWords() {
     $.get('http://localhost:3000/work-with-base/keyWords', {
@@ -32,6 +33,16 @@ function getModels(numberOfPatentsToCompare) {
     });
 };
 
+function postModels(newModels) {
+    $.post('http://localhost:3000/work-with-base/save-models', {
+        models: newModels,
+    }).then(function(res) {
+        console.log(res);
+    }, function(reason) {
+        console.log(reason);
+    });
+};
+
 function workWithBase(queryResult) {
     var numberOfPatentsToCompare = workWithKeyWords(queryResult);
     getModels(numberOfPatentsToCompare);    
@@ -54,19 +65,50 @@ function workWithModels(queryResult) {
 }
 
 function workWithAbstracts(queryResult) {
+    var similarityArray = []
+        semanticModelsArray = [];
     if(queryResult.length == 1) {
         queryResult[0] = [queryResult[0]];
     }    
     console.log(queryResult);
-    var similarityArray = [];
-    for(var i = 0; i< queryResult.length; i++) {
-        similarityArray[i] = {};
-        similarityArray[i].number = queryResult[i][0].idabstract;
-        similarityArray[i].syntaxModel = [];
-        // similarityArray[i].semanticModel = queryResult[i][0];
-        // similarityArray[i].similarity = queryResult[i][0];
-    }
-    console.log(similarityArray);
+
+    queryResult.reduce(function(actionsChain, value){
+        return actionsChain.then(function(){ 
+            return takeSemanticModel(value[0].Abstract, value[0].idabstract);
+        });
+    }, Promise.resolve()).then(function(res) {
+        for(key in newModels) {
+            console.log(newModels[key]);
+            postModels(newModels);
+        }
+    });
+}
+
+function takeSemanticModel(abstract, number) {
+    return new Promise( function(resolve, reject) {
+        var newBody = null;
+        var p1 = sendText(abstract);
+        p1.then(function (res) {
+            console.log(res);
+            var p2 = takeXML();
+                p2.then(function (res) {
+                    console.log('syntax model was built');
+                    newBody = fileParse(res);
+                    hideContainer();
+                    var key = newModels.length; 
+                    newModels[key] = {};
+                    newModels[key].model = newBody;
+                    newModels[key].number = number;              
+                    resolve(newBody);
+                }, function (reason) {
+                    console.log(reason);
+                    reject(reason);
+                });
+        }, function (reason) {
+            console.log(reason);
+            reject(reason);
+        }); 
+    });
 }
 
 function workWithKeyWords(queryResult) {
@@ -107,4 +149,9 @@ function compareArrays(array, innerArray) {
 
 function getInnerKeyWords(array) {
     innerKeyWords = array.split(',');
+}
+
+function hideContainer() {
+    var body = document.getElementById('container');
+    body.style.display = 'none';
 }

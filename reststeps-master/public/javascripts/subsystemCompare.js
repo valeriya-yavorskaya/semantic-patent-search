@@ -1,5 +1,5 @@
 /*функция, реализующая подсистему Сравнение*/
-function compareModels(file, newBody) {        
+function compareModels(file, newBody) {   
      var globalSynonyms = null,
          newXML = file,
          obj = $(newXML);

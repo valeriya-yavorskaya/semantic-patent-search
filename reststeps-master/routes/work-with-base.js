@@ -68,6 +68,30 @@ router.post('/models', function(req, res, next) {
     });
 });
 
+router.post('/save-models', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); 
+    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept");
+
+    var newModels = req.body['newModels[]'],
+        query = '';
+
+    console.log(req.body.models);
+
+    // if(typeof(numbers) == 'string') {
+    //   query = 'SELECT idsemanticModel, semanticModel FROM semanticmodels WHERE (idsemanticModel='+ numbers +');';
+    // } else {
+    //   for( var i = 0; i < numbers.length; i++) {
+    //     var newQuery = 'SELECT idsemanticModel, semanticModel FROM semanticmodels WHERE (idsemanticModel='+ numbers[i] +');';
+    //     query += newQuery;
+    //   } 
+    // }    
+    
+    // connection.query(query, function (error, results, fields) {
+    //     if (error) throw error;
+    //     res.send(results);
+    // });
+});
+
 router.options('/',function (req,res,next) {
   res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept, Authorization");
   res.header("Access-Control-Allow-Origin", "*");
