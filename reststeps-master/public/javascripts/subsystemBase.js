@@ -18,7 +18,7 @@ function getAbstracts(numberOfPatentsToCompare) {
     $.post('http://localhost:3000/work-with-base/abstracts', {
         numbers: numberOfPatentsToCompare,
     }).then(function (res) {
-        console.log('Abstracts were loaded');
+        console.log('Abstracts were loaded'); 
         workWithAbstracts(res);
     }, function (reason) {
         console.log(reason);
@@ -55,7 +55,6 @@ function workWithModels(queryResult) {
     if(queryResult.length == 1) {
         queryResult[0] = [queryResult[0]];
     }
-    console.log(queryResult);
     var numbersOfAbstractsToTake = [];  
     var existingModels = 0;
     for(var i = 0; i < queryResult.length; i++) {
@@ -76,15 +75,44 @@ function workWithModels(queryResult) {
         }
     }
     if( existingModels == queryResult.length ) {
-        compareModels();
+        compareOuterModelsWithInnerModel();
     }       
     elem.addEventListener("modelsWereBuilt", function(event) {
-        compareModels();
+        compareOuterModelsWithInnerModel();
     }, false); 
 }
 
-function compareModels() {
+function compareOuterModelsWithInnerModel() {
     console.log('let\'s compare');
+    var results = [];
+    var newModelsArray = [];
+    for(var key in newModels) {
+        newModelsArray[key] = newModels[key];
+    }
+    newModelsArray.reduce(function(actionsChain, value){
+        return actionsChain.then(function(){ 
+            return new Promise(function(resolve, reject) {
+                var promise = compareModels(value.model, builtSemanticModel);
+                promise.then(function(res) {
+                    var key = results.length;
+                    results[key] = {};
+                    results[key].number = value.number;
+                    results[key].similarity = res;
+                    resolve(res);
+                }, function(reason) {
+                    reject(reason);
+                });
+            });
+        });
+    }, Promise.resolve()).then(function(res) {
+        console.log(results);
+        results.sort(compareObjectsSimilarity);
+        console.log(results);
+    });
+}
+
+function compareObjectsSimilarity(obj1, obj2) {
+  return obj1.similarity - obj2.similarity;
 }
 
 function workWithAbstracts(queryResult) {

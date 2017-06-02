@@ -1,6 +1,6 @@
+var newBody = null,
+    builtSemanticModel = null;
 window.onload = function() {
-    var newBody = null;
-
     /*Подготовительная функция, отвечающая за запуск основной функции - чтения XML-файла с синтаксической моделью при готовности страницы */
     $(document).ready( function() {
         var btn = document.getElementById('take-graph');
@@ -57,7 +57,13 @@ window.onload = function() {
                     var loadedFile = event.target.result;                                       
                     console.log('file №2 was loaded');
                     /* Вызов подсистемы Сравнение */
-                    compareModels(loadedFile, newBody); 
+                    var countSimilarityPromise = compareModels(loadedFile, newBody); 
+                    countSimilarityPromise.then(function(res) {
+                        var output = document.getElementById('output-result');
+                        output.innerText = 'Модель №1 и модель №2 схожи на ' + res + '%';
+                    }, function(reason) {
+                        console.log(reason);
+                    });
                 }
                 
                 reader.onerror = function(event) {
@@ -94,7 +100,7 @@ window.onload = function() {
                             var p2 = takeXML();
                             p2.then(function (res) {
                                     console.log('syntax model was built');
-                                    var newBody = fileParse(res);
+                                    builtSemanticModel = fileParse(res);
                                     displayBuildingResult();
                                 }, function (reason) {
                                     console.log(reason);

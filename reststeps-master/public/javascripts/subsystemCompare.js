@@ -20,18 +20,26 @@ function compareModels(file, newBody) {
      var wordsToFindSynonyms = returnedValuesOfMakingObj[1]; 
      var wrds = JSON.stringify(wordsToFindSynonyms);
 
-     var g = getSynonyms(wrds);
-     g.then(function(res) {
-        useSynonyms(res);
-        var similarityInWords = compareObjectsInWords(innerObjectWords,takenObjectWords)[0];
-        console.log(similarityInWords);
-        var similarityInEdges = compareObjectsInEdges(innerObjectEdges,takenObjectEdges);
-        console.log(similarityInEdges);
-        var midSimilarity = (similarityInWords + similarityInEdges) / 2;
+     var countSimilarityPromise = countSimilarity(innerObjectWords, takenObjectWords, innerObjectEdges, takenObjectEdges, wrds);
+     return countSimilarityPromise;
+}
 
-        var output = document.getElementById('output-result');
-        output.innerText = 'Модель №1 и модель №2 схожи на ' + midSimilarity + '%';
-     })
+function countSimilarity(innerObjectWords, takenObjectWords, innerObjectEdges, takenObjectEdges, wrds) {
+    return new Promise(function(resolve, reject) {
+        var g = getSynonyms(wrds);
+        g.then(function(res) {
+            useSynonyms(res);
+            var similarityInWords = compareObjectsInWords(innerObjectWords,takenObjectWords)[0];
+            console.log(similarityInWords);
+            var similarityInEdges = compareObjectsInEdges(innerObjectEdges,takenObjectEdges);
+            console.log(similarityInEdges);
+            var midSimilarity = (similarityInWords + similarityInEdges) / 2;
+            resolve(midSimilarity);
+        }, function(reason) {
+            console.log(reason);
+            reject(reason);
+        })
+    });
 }
 
     function compareObjectsInWords(innerObject,takenObject) {
