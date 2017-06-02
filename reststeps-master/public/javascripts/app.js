@@ -128,15 +128,15 @@ window.onload = function() {
         });
     }
 
-    function hideContainer() {
-        var body = document.getElementById('container');
-        body.style.display = 'none';
-    }
-
     function displayBuildingResult() {
         hideContainer();
         console.log('file №1 was built');
         var output = document.getElementById('output-built');
         output.innerText = 'Семантическая модель была построена и сохранена';
     }
+}
+
+function hideContainer() {
+    var body = document.getElementById('container');
+    body.style.display = 'none';
 }

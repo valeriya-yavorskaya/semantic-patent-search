@@ -1,5 +1,8 @@
 var innerKeyWords = [],
-    newModels = [];
+    newModels = {};
+
+var elem = document.createElement('div');
+var event = new CustomEvent("modelsWereBuilt");
 
 function getKeyWords() {
     $.get('http://localhost:3000/work-with-base/keyWords', {
@@ -52,16 +55,36 @@ function workWithModels(queryResult) {
     if(queryResult.length == 1) {
         queryResult[0] = [queryResult[0]];
     }
+    console.log(queryResult);
     var numbersOfAbstractsToTake = [];  
+    var existingModels = 0;
     for(var i = 0; i < queryResult.length; i++) {
         if(queryResult[i][0].semanticModel === null) {
             console.log('model doesn\'t exist');
             numbersOfAbstractsToTake[numbersOfAbstractsToTake.length] = queryResult[i][0].idsemanticModel;
+            getAbstracts(numbersOfAbstractsToTake);
         } else {
             console.log('model exist');
+            existingModels++;
+            var counter = 0; 
+            for(var key in newModels) {
+                counter++;
+            }
+            newModels[counter] = {};
+            newModels[counter].model = queryResult[i][0].semanticModel;
+            newModels[counter].number = queryResult[i][0].idsemanticModel;
         }
     }
-    getAbstracts(numbersOfAbstractsToTake);
+    if( existingModels == queryResult.length ) {
+        compareModels();
+    }       
+    elem.addEventListener("modelsWereBuilt", function(event) {
+        compareModels();
+    }, false); 
+}
+
+function compareModels() {
+    console.log('let\'s compare');
 }
 
 function workWithAbstracts(queryResult) {
@@ -69,18 +92,15 @@ function workWithAbstracts(queryResult) {
         semanticModelsArray = [];
     if(queryResult.length == 1) {
         queryResult[0] = [queryResult[0]];
-    }    
-    console.log(queryResult);
+    }
 
     queryResult.reduce(function(actionsChain, value){
         return actionsChain.then(function(){ 
             return takeSemanticModel(value[0].Abstract, value[0].idabstract);
         });
-    }, Promise.resolve()).then(function(res) {
-        for(key in newModels) {
-            console.log(newModels[key]);
-            postModels(newModels);
-        }
+    }, Promise.resolve()).then(function(res) {   
+        postModels(JSON.stringify(newModels));
+        elem.dispatchEvent(event);
     });
 }
 
@@ -95,10 +115,13 @@ function takeSemanticModel(abstract, number) {
                     console.log('syntax model was built');
                     newBody = fileParse(res);
                     hideContainer();
-                    var key = newModels.length; 
-                    newModels[key] = {};
-                    newModels[key].model = newBody;
-                    newModels[key].number = number;              
+                    var counter = 0; 
+                    for(var key in newModels) {
+                        counter++;
+                    }
+                    newModels[counter] = {};
+                    newModels[counter].model = newBody;
+                    newModels[counter].number = number;              
                     resolve(newBody);
                 }, function (reason) {
                     console.log(reason);
@@ -149,9 +172,4 @@ function compareArrays(array, innerArray) {
 
 function getInnerKeyWords(array) {
     innerKeyWords = array.split(',');
-}
-
-function hideContainer() {
-    var body = document.getElementById('container');
-    body.style.display = 'none';
 }
