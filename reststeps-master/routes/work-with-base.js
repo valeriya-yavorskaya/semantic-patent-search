@@ -17,7 +17,6 @@ router.get('/keyWords', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*"); 
     res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept");
 
-    // connection.query('SELECT Number FROM tbl_document; SELECT keyWords FROM tbl_document', function (error, results, fields) {
     connection.query('SELECT Number, keyWords FROM tbl_document', function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -84,6 +83,24 @@ router.post('/save-models', function(req, res, next) {
     connection.query(query, function (error, results, fields) {
         if (error) throw error;
         res.send('models were saved');
+    });
+});
+
+router.post('/take-entire-info', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); 
+    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Requested-With, Content-Type, Accept");
+
+        var resultsToTakeInfo = JSON.parse(req.body.results),
+            query = '';
+
+    for( var key in resultsToTakeInfo) {
+        var newQuery = 'SELECT * FROM tbl_document, abstracts WHERE (Number='+ resultsToTakeInfo[key].number +'&& idabstract='+ resultsToTakeInfo[key].number +' );';
+        query += newQuery;
+      }
+    
+    connection.query(query, function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
     });
 });
 

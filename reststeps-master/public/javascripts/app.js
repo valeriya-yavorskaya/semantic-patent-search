@@ -130,19 +130,51 @@ window.onload = function() {
     var textField1 = document.getElementById('input-keywords');
     if(textField1) {
         textField1.addEventListener('blur', function(event) {
+            /*получение ключевых слов для старта поиска в БД*/
             getInnerKeyWords(event.target.value);
         });
     }
 
+    /*отображение результатов построения семантической модели заявки*/
     function displayBuildingResult() {
         hideContainer();
         console.log('file №1 was built');
         var output = document.getElementById('output-built');
-        output.innerText = 'Семантическая модель была построена и сохранена';
+        output.innerText = 'Семантическая модель заявки была построена и сохранена';
     }
 }
 
 function hideContainer() {
     var body = document.getElementById('container');
     body.style.display = 'none';
+}
+
+/*отображение результатов сравнения в виде таблицы*/
+function displayComparisonResults(results) {
+    var tableToDisplay = document.getElementById('output-result');
+    if(tableToDisplay) {
+        var headRow = document.createElement('thead');
+        for( var key in results[0][0]) {
+            if( (key != 'keyWords') && (key != 'idabstract') ) {
+                var headCell = document.createElement('th');
+                headCell.innerText = key;
+                headRow.appendChild(headCell);
+            }
+        }
+        tableToDisplay.appendChild(headRow);
+    }
+
+    for( var i = 0 ; i < results.length; i++) {
+        var row = document.createElement('tr');
+        var rowData = results[i][0];
+        console.log(rowData);
+        for( var key in rowData) {
+            if( (key != 'keyWords') && (key != 'idabstract') ) {
+                var cell = document.createElement('th');
+                cell.innerText = rowData[key];
+                row.appendChild(cell);
+            }
+        }
+        tableToDisplay.appendChild(row);
+    }
 }

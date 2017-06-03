@@ -76,19 +76,6 @@
         body.appendChild(resultTree); 
         body.appendChild(br);
         
-        // return new Promise( function(resolve, reject) {
-        //     /*создать элемент для хранения текста из временного хранилища семантической модели*/
-        //     var newBody = body.innerText;
-        //     /*отправка готовой модели на сервер для сохранения во внешний файл*/
-        //     var p = sendXML(newBody); 
-        //     p.then(function (res) {
-        //         console.log('file №1 was saved');
-        //         resolve(res);
-        //     }, function (reason) {
-        //         console.log(reason);
-        //         reject(reason);
-        //     });
-        // });
         var newBody = body.innerText;
         return newBody;
     };

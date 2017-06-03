@@ -14,9 +14,9 @@ function getKeyWords() {
     });
 };
 
-function getAbstracts(numberOfPatentsToCompare) {
+function getAbstracts(numbersOfPatents) {
     $.post('http://localhost:3000/work-with-base/abstracts', {
-        numbers: numberOfPatentsToCompare,
+        numbers: numbersOfPatents,
     }).then(function (res) {
         console.log('Abstracts were loaded'); 
         workWithAbstracts(res);
@@ -45,6 +45,29 @@ function postModels(newModels) {
         console.log(reason);
     });
 };
+
+function takeEntireInfoForPatents(results) {
+    $.post('http://localhost:3000/work-with-base/take-entire-info', {
+        results: JSON.stringify(results),
+    }).then(function(res) {
+        for( var i = 0; i < res.length; i++) {
+            for( var key in results) {
+                if(res[i][0].Number == results[key].number) {
+                    res[i][0].Similarity = results[key].similarity.toFixed(2);
+                }
+            }   
+        }
+        res.sort(compareObjectsSimilarity);
+        displayComparisonResults(res);
+    }, function(reason) {
+        console.log(reason);
+    });
+}
+
+
+function compareObjectsSimilarity(obj1, obj2) {
+  return obj2[0].Similarity - obj1[0].Similarity;
+}
 
 function workWithBase(queryResult) {
     var numberOfPatentsToCompare = workWithKeyWords(queryResult);
@@ -104,15 +127,9 @@ function compareOuterModelsWithInnerModel() {
                 });
             });
         });
-    }, Promise.resolve()).then(function(res) {
-        console.log(results);
-        results.sort(compareObjectsSimilarity);
-        console.log(results);
+    }, Promise.resolve()).then(function(res) {                
+        takeEntireInfoForPatents(results);
     });
-}
-
-function compareObjectsSimilarity(obj1, obj2) {
-  return obj1.similarity - obj2.similarity;
 }
 
 function workWithAbstracts(queryResult) {
