@@ -95,7 +95,7 @@ window.onload = function() {
                     console.log('text file was loaded');
                     /* Вызов подсистемы Построение */
                     var output = document.getElementById('output-built');
-                    output.innerText = 'Процесс идёт';
+                    output.innerText = 'Пожалуйста, подождите, происходит построение модели.';
                     var p1 = sendText(loadedFile);        
                     p1.then(function (res) {
                             console.log(res);
@@ -125,6 +125,8 @@ window.onload = function() {
     if(btn4) {    
         btn4.addEventListener("click", function() {
             $(btn4).attr('disabled',true);
+            var output = document.getElementById('output-search');
+            output.innerText = 'Пожалуйста, подождите, происходит отбор патентнов в базе';
             getKeyWords();
         });
     }
@@ -154,6 +156,9 @@ function hideContainer() {
 
 /*отображение результатов сравнения в виде таблицы*/
 function displayComparisonResults(results) {
+    var output = document.getElementById('output-search');
+    output.innerText = 'Патенты отобраны';
+
     var tableToDisplay = document.getElementById('output-result');
     if(tableToDisplay) {
         var headRow = document.createElement('thead');
@@ -170,7 +175,6 @@ function displayComparisonResults(results) {
     for( var i = 0 ; i < results.length; i++) {
         var row = document.createElement('tr');
         var rowData = results[i][0];
-        console.log(rowData);
         for( var key in rowData) {
             if( (key != 'keyWords') && (key != 'idabstract') ) {
                 var cell = document.createElement('th');

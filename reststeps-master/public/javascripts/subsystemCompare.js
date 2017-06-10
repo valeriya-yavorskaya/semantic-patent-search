@@ -166,6 +166,7 @@ function countSimilarity(innerObjectWords, takenObjectWords, innerObjectEdges, t
             }
             if(repeatitiveFlag) countOfSimilarElements -= repeatitiveCounter;
             similarity = (countOfSimilarElements/countOfAllElements)*100;
+            if(similarity < 0) similarity = 0;
             return [similarity, synonymsWereApplied];
     }
 
@@ -237,7 +238,7 @@ function countSimilarity(innerObjectWords, takenObjectWords, innerObjectEdges, t
                                                                высчитывается для построенной модели по отношению к загруженной*/
             }
             similarity = sumSimilarity / takenArray.length; /*значение нормируется по отношению к числу всех пар вершин*/
-           
+            if (similarity == NaN) similarity = 0;
             return similarity;
     }
 
