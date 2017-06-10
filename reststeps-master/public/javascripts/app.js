@@ -94,6 +94,8 @@ window.onload = function() {
                     var loadedFile = event.target.result;                                       
                     console.log('text file was loaded');
                     /* Вызов подсистемы Построение */
+                    var output = document.getElementById('output-built');
+                    output.innerText = 'Процесс идёт';
                     var p1 = sendText(loadedFile);        
                     p1.then(function (res) {
                             console.log(res);
@@ -146,7 +148,8 @@ window.onload = function() {
 
 function hideContainer() {
     var body = document.getElementById('container');
-    body.style.display = 'none';
+    // body.style.display = 'none';
+    body.innerText = '';
 }
 
 /*отображение результатов сравнения в виде таблицы*/

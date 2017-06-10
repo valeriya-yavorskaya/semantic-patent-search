@@ -3,15 +3,16 @@ function compareModels(file, newBody) {
      var globalSynonyms = null,
          newXML = file,
          obj = $(newXML);
-
+    
      var takenObjectEdges = makeEdgesInfo(obj); 
+
      if(newBody=='') alert('Ошибка в рассматриваемом графе ');
      else {
-         obj = $(newBody);
+         obj1 = $(newBody);
          /*получение информации о загруженнной семантической модели*/
-         returnedValuesOfMakingObj = makeWordsInfo(obj);
-         var innerObjectWords = returnedValuesOfMakingObj[0]; 
-         var innerObjectEdges = makeEdgesInfo(obj);
+         returnedValuesOfMakingObj = makeWordsInfo(obj1);
+         var innerObjectWords = returnedValuesOfMakingObj[0];
+         var innerObjectEdges = makeEdgesInfo(obj1);
      }
      
      /*получение информации о построенной семантической модели*/
@@ -170,7 +171,6 @@ function countSimilarity(innerObjectWords, takenObjectWords, innerObjectEdges, t
 
      /*функция, реализующая подсистему Сравнение для объектов, представляющих собой два набора свойств рёбер, имеющих общую вершину*/
     function compareObjectsInEdges(innerObject,takenObject) {
-        var innerArray = [],
             takenArray = [],
             pairObj = {},
             innerPair = [],

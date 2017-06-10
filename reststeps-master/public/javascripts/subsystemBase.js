@@ -84,22 +84,25 @@ function workWithModels(queryResult) {
         if(queryResult[i][0].semanticModel === null) {
             console.log('model doesn\'t exist');
             numbersOfAbstractsToTake[numbersOfAbstractsToTake.length] = queryResult[i][0].idsemanticModel;
-            getAbstracts(numbersOfAbstractsToTake);
+            // getAbstracts(numbersOfAbstractsToTake);
         } else {
             console.log('model exist');
-            existingModels++;
+            
             var counter = 0; 
-            for(var key in newModels) {
-                counter++;
-            }
-            newModels[counter] = {};
-            newModels[counter].model = queryResult[i][0].semanticModel;
-            newModels[counter].number = queryResult[i][0].idsemanticModel;
+            // for(var key in newModels) {
+            //     counter++;
+            // }
+            newModels[existingModels] = {};
+            newModels[existingModels].model = queryResult[i][0].semanticModel;
+            newModels[existingModels].number = queryResult[i][0].idsemanticModel;
+            existingModels++;
         }
     }
     if( existingModels == queryResult.length ) {
         compareOuterModelsWithInnerModel();
-    }       
+    } else {
+        getAbstracts(numbersOfAbstractsToTake);
+    }   
     elem.addEventListener("modelsWereBuilt", function(event) {
         compareOuterModelsWithInnerModel();
     }, false); 
@@ -109,9 +112,27 @@ function compareOuterModelsWithInnerModel() {
     console.log('let\'s compare');
     var results = [];
     var newModelsArray = [];
+
     for(var key in newModels) {
         newModelsArray[key] = newModels[key];
     }
+
+    // Promise.all( newModelsArray.map(myfunc) )
+    // .then(function (results)  {
+    //     console.log(results);
+    // });
+
+    // function myfunc(elem) {
+    //     return new Promise (function(resolve,reject) {
+    //         console.log('here'); 
+    //         var p =  compareModels(elem.model, builtSemanticModel);   
+    //         p.then(function(res) {
+    //             console.log(res);
+    //         })      
+    //         resolve(elem); 
+    //     });       
+    // }
+
     newModelsArray.reduce(function(actionsChain, value){
         return actionsChain.then(function(){ 
             return new Promise(function(resolve, reject) {
@@ -144,9 +165,21 @@ function workWithAbstracts(queryResult) {
             return takeSemanticModel(value[0].Abstract, value[0].idabstract);
         });
     }, Promise.resolve()).then(function(res) {   
+    //    for (var i=0; i<res.length; i++) {
+    //        console.log(res[i]);
+    //    }
         postModels(JSON.stringify(newModels));
         elem.dispatchEvent(event);
     });
+
+    // Promise.all( queryResult.map(myfunc2) )
+    // .then(function (results)  {
+    //     console.log(results);
+    // });
+
+    // function myfunc2(elem) {
+    //     console.log(elem);
+    // }
 }
 
 function takeSemanticModel(abstract, number) {
